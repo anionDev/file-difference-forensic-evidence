@@ -1,0 +1,1 @@
+In this repository scripts should be created which allow to automatically determine characteristical evidences (the characteristical changes in the filesystem) which a (arbitrary) programm produces.
