@@ -9,7 +9,7 @@ import time
 #---------------------
 #configuration:
 log_file = os.path.dirname(os.path.abspath(__file__)) + "\\log.log"
-actions = ["a", "b", "c", "d", "e"]
+actions = ["C:\\actions\\a.exe", "C:\\actions\\b.exe", "C:\\actions\\c.exe", "C:\\actions\\d.exe", "C:\\actions\\e.exe"]
 amount_of_executions_per_action=3
 loglevel=logging.DEBUG
 #---------------------

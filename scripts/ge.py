@@ -12,7 +12,7 @@ import logging
 #---------------------
 #configuration:
 use_command_line_argument_for_path_of_init_raw=True
-actions = ["a", "b", "c", "d", "e"]
+actions = ["C:\\actions\\a.exe", "C:\\actions\\b.exe", "C:\\actions\\c.exe", "C:\\actions\\d.exe", "C:\\actions\\e.exe"]
 name_of_noise_action="noise"
 amount_of_executions_per_action=3
 if(use_command_line_argument_for_path_of_init_raw):
@@ -111,10 +111,7 @@ def continue_vm():
     ensure_vm_is_running(name_of_vm_to_analyse)
 
 def execute_action_in_vm(action):
-    execute_program_in_vm(name_of_vm_to_analyse,"C:\\ST\\"+action+".exe",user_of_vm_to_analyse,password_of_vm_to_analyse,5)
-
-def execute_sync_exe():
-    execute_program_in_vm(name_of_vm_to_analyse,"C:\\ST\\sync.exe",user_of_vm_to_analyse,password_of_vm_to_analyse,20)
+    execute_program_in_vm(name_of_vm_to_analyse,action,user_of_vm_to_analyse,password_of_vm_to_analyse,5)
 
 def save_state_of_vm(name_of_vm):
     ensure_vm_is_in_save_state(name_of_vm)
@@ -169,7 +166,6 @@ def generate_evidence(action,iteration_number):
             time.sleep(noise_recordding_time_in_seconds)
         else:
             execute_action_in_vm(action)
-            execute_sync_exe()
         save_state_of_vm(name_of_vm_to_analyse)
         create_trace_image(action,iteration_number)
         restore_original_image()
