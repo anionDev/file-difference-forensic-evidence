@@ -60,14 +60,14 @@ def start_program(executable_with_full_path, argument,waiting_time_in_seconds_af
     process = subprocess.Popen(arguments)
     process.wait()
     time.sleep(waiting_time_in_seconds_after_execution)
-def add_shared_folder_for_vm_which_has_idifference():
-    start_program(vboxmanage_executable,"sharedfolder add " + name_of_vm_which_has_idifference + " --name " + name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + " -hostpath " + shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + " -automount")
+def add_shared_folder_for_vm_which_has_idifference(configuration):
+    start_program(configuration.vboxmanage_executable,"sharedfolder add " + configuration.name_of_vm_which_has_idifference + " --name " + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + " -hostpath " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + " -automount")
 
-def remove_shared_folder_from_vm_which_has_idifference():
-    start_program(vboxmanage_executable, "sharedfolder remove " + name_of_vm_which_has_idifference + " --name " + name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
+def remove_shared_folder_from_vm_which_has_idifference(configuration):
+    start_program(configuration.vboxmanage_executable, "sharedfolder remove " + configuration.name_of_vm_which_has_idifference + " --name " + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
 
 def execute_program_in_vm(name_of_vm,executable_file_with_path,username, password,waiting_time_in_seconds_after_execution,arguments):
-    start_program(vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution + " -- " + " ".join(map(lambda argument: "\"" + argument + "\"",arguments)))
+    start_program(configuration.vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution + " -- " + " ".join(map(lambda argument: "\"" + argument + "\"",arguments)))
 
 def ensure_vm_is_running(name_of_vm,configuration):
     if get_vm_state(name_of_vm) != "running":
@@ -75,24 +75,24 @@ def ensure_vm_is_running(name_of_vm,configuration):
             gui_argument = "gui"
         else:
             gui_argument = "headless"
-        start_program(vboxmanage_executable,"startvm " + name_of_vm + " -type " + gui_argument,5)
+        start_program(configuration.vboxmanage_executable,"startvm " + name_of_vm + " -type " + gui_argument,5)
 
-def ensure_vm_is_shutdown(name_of_vm):
+def ensure_vm_is_shutdown(name_of_vm,configuration):
     if get_vm_state(name_of_vm) == "running":
-        start_program(vboxmanage_executable,"controlvm " + name_of_vm + " poweroff",5)
+        start_program(configuration.vboxmanage_executable,"controlvm " + name_of_vm + " poweroff",5)
 
-def ensure_vm_is_in_save_state(name_of_vm):
+def ensure_vm_is_in_save_state(name_of_vm,configuration):
     if get_vm_state(name_of_vm) == "running":
-        start_program(vboxmanage_executable,"controlvm " + name_of_vm + " savestate",5)
+        start_program(configuration.vboxmanage_executable,"controlvm " + name_of_vm + " savestate",5)
 
-def continue_vm():
-    ensure_vm_is_running(name_of_vm_to_analyse,configuration.use_gui_mode_for_vm)
+def continue_vm(configuration):
+    ensure_vm_is_running(configuration.name_of_vm_to_analyse,configuration.configuration.use_gui_mode_for_vm)
 
-def execute_action_in_vm(action):
-    execute_program_in_vm(name_of_vm_to_analyse,action[0],user_of_vm_to_analyse,password_of_vm_to_analyse,5,action[2])
+def execute_action_in_vm(action,configuration):
+    execute_program_in_vm(name_of_vm_to_analyse,action[0],configuration.user_of_vm_to_analyse,configuration.password_of_vm_to_analyse,5,action[2],configuration)
 
-def save_state_of_vm(name_of_vm):
-    ensure_vm_is_in_save_state(name_of_vm)
+def save_state_of_vm(name_of_vm,configuration):
+    ensure_vm_is_in_save_state(name_of_vm,configuration)
 
 def start_program_with_parameter_list(executable_with_full_path, arguments, waiting_time_in_seconds_after_execution=1):
     log.debug("Start " + executable_with_full_path + " " + " ".join(arguments))
@@ -104,5 +104,5 @@ def start_program_with_parameter_list(executable_with_full_path, arguments, wait
     time.sleep(waiting_time_in_seconds_after_execution)
 
 def get_hdd_uuid(vm_name):
-        antwort_uuid = subprocess.check_output("\"" + vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()
-        return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(antwort_uuid).group(1)
+        id = subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()
+        return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(id).group(1)
