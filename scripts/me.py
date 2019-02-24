@@ -82,13 +82,9 @@ def execute(configuration):
                 configuration.log.error("Exception occurred while merge evidence  for action " + action + ":")
                 logging.error(exception, exc_info=True)
             configuration.log.info("Merge evidence for action " + action + " finished")
-
-
+            
     try:
-        configuration.log.info("---------------------")
-        configuration.log.info("Start me.py")
         merge_evidence()
     except Exception as exception:
         configuration.log.error("Exception occurred in me.py:")
         logging.error(exception, exc_info=True)
-    configuration.log.info("me.py finished")

@@ -93,8 +93,6 @@ def execute(configuration):
                 os.remove(init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
             shutil.copy(init_raw_file, init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
-    configuration.log.info("---------------------")
-    configuration.log.info("Start ge.py")
     try:
         generate_new_init_raw_file_if_desired()
         add_shared_folder_for_vm_which_has_idifference()
@@ -111,4 +109,3 @@ def execute(configuration):
     finally:
         ensure_vm_is_shutdown(name_of_vm_which_has_idifference)
         remove_shared_folder_from_vm_which_has_idifference()
-    configuration.log.info("ge.py finished")

@@ -26,8 +26,8 @@ def execute(configuration):
             return 0
     def get_trace_from_me_file(me_file_with_full_path):
         traces = set()
-        with open(me_file_with_full_path) as f:
-            lines = f.readlines()
+        with open(me_file_with_full_path) as fileStream:
+            lines = fileStream.readlines()
             for line in lines:
                 if ('\t' in line):
                     splitted = re.split(r'\t+', line)
@@ -57,7 +57,7 @@ def execute(configuration):
         for action in actions:
             configuration.log.info("Start characteristic evidence for action " + action)
             try:
-                ignored_files = [current_folder + "\\me\\noise.me"]
+                ignored_files = [current_folder + "\\me\\" + configuration.name_of_noise_action + ".me"]
                 for ignore_action_name in actions:
                     if ignore_action_name != action:
                         ignored_files.append(current_folder + "\\me\\" + ignore_action_name + ".me")
@@ -68,10 +68,7 @@ def execute(configuration):
             configuration.log.info("Characteristic evidence for action " + action + " finished")
 
     try:
-        configuration.log.info("---------------------")
-        configuration.log.info("Start ce.py")
         characteristic_evidence()
     except Exception as exception:
         configuration.log.error("Exception occurred in ce.py:")
         logging.error(exception, exc_info=True)
-    configuration.log.info("ce.py finished")

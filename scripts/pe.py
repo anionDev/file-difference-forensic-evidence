@@ -70,10 +70,7 @@ def execute(configuration):
                 configuration.log.info("Prepare evidence for action " + action + " in iteration " + str(execution_number) + " finished")
 
     try:
-        configuration.log.info("---------------------")
-        configuration.log.info("Start pe.py")
         prepare_evidence()
     except Exception as exception:
         configuration.log.error("Exception occurred in pe.py:")
         logging.error(exception, exc_info=True)
-    configuration.log.info("pe.py finished")
