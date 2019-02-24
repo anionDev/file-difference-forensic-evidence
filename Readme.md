@@ -1,9 +1,9 @@
 In this repository scripts should be created which allow to automatically determine characteristical evidences (the characteristical changes in the filesystem) which a (arbitrary) program/action produces.
 Execution-order:
-1. Generate evidence: ge.py
-2. Prepare evidence: pe.py
-3. Merge evidence: me.py
-4. Characteristic evidence: ce.py
+1. Generate evidences: ge.py
+2. Prepare evidences: pe.py
+3. Merge evidences: me.py
+4. Characteristic evidences: ce.py
 
 ge.py starts the desired actions in a virtual machine to generate evidences. Furthermore an other vm will be used to calculate the difference in the file-system with [idifference2](https://github.com/simsong/dfxml/blob/master/python/idifference2.py). This process will be looped and takes some time.
 Then the other scripts will be executed to analyse the idiff-files, extract/merge the evidences and calculates the characteristic evidences.
