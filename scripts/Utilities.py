@@ -98,3 +98,7 @@ def start_program_with_parameter_list(executable_with_full_path, arguments, wait
     process = subprocess.Popen(argument_list)
     process.wait()
     time.sleep(waiting_time_in_seconds_after_execution)
+
+def get_hdd_uuid(vm_name):
+        antwort_uuid = subprocess.check_output("\""+vboxmanage_executable+"\" " + "showvminfo " + vm_name + " --machinereadable").decode()
+        return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(antwort_uuid).group(1)

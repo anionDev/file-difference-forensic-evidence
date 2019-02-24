@@ -14,5 +14,6 @@ To execute this script correctly you need:
 -A vm where the desired action(s) can be executed
 -Much time
 -Much disk space
+Before executing the scripts you must probably adjust the variables in the configuration (in scripts/Utilities.py).
 
 If you like this project and it has helped you, please send me a cookie. I would be glad.

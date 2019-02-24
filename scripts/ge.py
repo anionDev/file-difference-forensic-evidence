@@ -29,12 +29,7 @@ def execute(configuration):
             return action
         else:
             return action + "." + str(iteration_number)
-
-
-    def get_hdd_uuid(vm_name):
-        antwort_uuid = subprocess.check_output("\""+vboxmanage_executable+"\" " + "showvminfo " + vm_name + " --machinereadable").decode()
-        return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(antwort_uuid).group(1)
-
+               
     def create_trace_image(action, iteration_number):
         start_program(vboxmanage_executable,"clonemedium disk " + get_hdd_uuid(name_of_vm_to_analyse) + " --format RAW " + shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
