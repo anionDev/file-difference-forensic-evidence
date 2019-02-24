@@ -18,77 +18,78 @@ loglevel=logging.DEBUG
 def get_name():
     return "Prepare evidences"
 
-logging.basicConfig(filename=log_file,
-                            filemode='a',
-                            format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
-                            datefmt='%Y-%m-%d %H:%M:%S',
-                            level=loglevel)
-log = logging.getLogger('M105')
-if not os.path.exists(os.getcwd()+ "\\pe\\"):
-    os.makedirs(os.getcwd()+ "\\pe\\")
-def get_pe_line(line_splitted_at_tab,operation):
-    result=list()
+def execute(configuration):
+    logging.basicConfig(filename=log_file,
+                                filemode='a',
+                                format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
+                                datefmt='%Y-%m-%d %H:%M:%S',
+                                level=loglevel)
+    log = logging.getLogger('M105')
+    if not os.path.exists(os.getcwd()+ "\\pe\\"):
+        os.makedirs(os.getcwd()+ "\\pe\\")
+    def get_pe_line(line_splitted_at_tab,operation):
+        result=list()
+        try:
+            if operation =="cr":
+                result.append(line_splitted_at_tab[1]+"\t"+operation)
+                result.append(line_splitted_at_tab[1]+"\ta")
+                result.append(line_splitted_at_tab[1]+"\tm")
+                result.append(line_splitted_at_tab[1]+"\tc")
+            if operation =="c":
+                pass
+            if operation =="d":
+                result.append(line_splitted_at_tab[1]+"\t"+operation)
+            if operation =="r":
+                pass
+            if operation =="m":
+                result.append(line_splitted_at_tab[0]+"\t"+operation)
+            if operation =="a":
+                pass
+        except:
+            pass
+        return result
+    def prepare_evidence_for_file(idiff_file, pe_file):
+        result=list()
+        with open(idiff_file) as file:
+            idiff_file_lines = file.readlines()
+        for line_with_new_line_character in idiff_file_lines:
+            line=line_with_new_line_character.replace("\n","")
+            if "\t" in line:
+                splitted=re.split(r'\t+', line)
+                result.extend(get_pe_line(splitted,current_operation))
+            else:
+                if line=="New files:":
+                    current_operation="cr"
+                if line=="Deleted files:":
+                    current_operation="d"
+                if line=="Renamed files:":
+                    current_operation="r"
+                if line=="Files with modified contents:":
+                    current_operation="m"
+                if line=="Files with changed properties:":
+                    current_operation="c"
+        result_as_set=set(result)
+        with open(pe_file, "w") as file:
+            for line in result_as_set:
+                file.write("%s\n" % line)
+
+    def prepare_evidence():
+        prepare_evidence_for_file(os.getcwd()+"\\idiff\\noise.idiff",os.getcwd()+ "\\pe\\noise.pe")
+        for action in actions:
+            for execution_number in range(1, amount_of_executions_per_action + 1):
+                log.info("Start prepare evidence for action " + action + " in iteration " + str(execution_number))
+                try:
+                    prepare_evidence_for_file(os.getcwd()+"\\idiff\\"+action+"."+str(execution_number)+".idiff",os.getcwd()+ "\\pe\\"+action+"."+str(execution_number)+".pe")
+                except Exception as exception:
+                    log.error("Exception occurred while prepare evidence  for action " + action + " in iteration " + str(execution_number) + ":")
+                    logging.error(exception, exc_info=True)
+                log.info("Prepare evidence for action " + action + " in iteration " + str(execution_number) + " finished")
+
     try:
-        if operation =="cr":
-            result.append(line_splitted_at_tab[1]+"\t"+operation)
-            result.append(line_splitted_at_tab[1]+"\ta")
-            result.append(line_splitted_at_tab[1]+"\tm")
-            result.append(line_splitted_at_tab[1]+"\tc")
-        if operation =="c":
-            pass
-        if operation =="d":
-            result.append(line_splitted_at_tab[1]+"\t"+operation)
-        if operation =="r":
-            pass
-        if operation =="m":
-            result.append(line_splitted_at_tab[0]+"\t"+operation)
-        if operation =="a":
-            pass
-    except:
-        pass
-    return result
-def prepare_evidence_for_file(idiff_file, pe_file):
-    result=list()
-    with open(idiff_file) as file:
-        idiff_file_lines = file.readlines()
-    for line_with_new_line_character in idiff_file_lines:
-        line=line_with_new_line_character.replace("\n","")
-        if "\t" in line:
-            splitted=re.split(r'\t+', line)
-            result.extend(get_pe_line(splitted,current_operation))
-        else:
-            if line=="New files:":
-                current_operation="cr"
-            if line=="Deleted files:":
-                current_operation="d"
-            if line=="Renamed files:":
-                current_operation="r"
-            if line=="Files with modified contents:":
-                current_operation="m"
-            if line=="Files with changed properties:":
-                current_operation="c"
-    result_as_set=set(result)
-    with open(pe_file, "w") as file:
-        for line in result_as_set:
-            file.write("%s\n" % line)
-
-def prepare_evidence():
-    prepare_evidence_for_file(os.getcwd()+"\\idiff\\noise.idiff",os.getcwd()+ "\\pe\\noise.pe")
-    for action in actions:
-        for execution_number in range(1, amount_of_executions_per_action + 1):
-            log.info("Start prepare evidence for action " + action + " in iteration " + str(execution_number))
-            try:
-                prepare_evidence_for_file(os.getcwd()+"\\idiff\\"+action+"."+str(execution_number)+".idiff",os.getcwd()+ "\\pe\\"+action+"."+str(execution_number)+".pe")
-            except Exception as exception:
-                log.error("Exception occurred while prepare evidence  for action " + action + " in iteration " + str(execution_number) + ":")
-                logging.error(exception, exc_info=True)
-            log.info("Prepare evidence for action " + action + " in iteration " + str(execution_number) + " finished")
-
-try:
-    log.info("---------------------")
-    log.info("Start pe.py")
-    prepare_evidence()
-except Exception as exception:
-    log.error("Exception occurred in pe.py:")
-    logging.error(exception, exc_info=True)
-log.info("pe.py finished")
+        log.info("---------------------")
+        log.info("Start pe.py")
+        prepare_evidence()
+    except Exception as exception:
+        log.error("Exception occurred in pe.py:")
+        logging.error(exception, exc_info=True)
+    log.info("pe.py finished")
