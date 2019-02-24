@@ -3,16 +3,17 @@ import pe
 import me
 import ce
 import Utilities
+import logging
 
-default_configuration_file="configuration.txt"
-
-def create_configurationFile():
-    Utilities.createConfiguration(default_configuration_file)
+logging.basicConfig(filename=log_file,
+                    filemode='a',
+                    format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
+                    datefmt='%Y-%m-%d %H:%M:%S',
+                    level=loglevel)
 
 def calculate_evidences():
     executionSteps = [ge,pe,me,ce]
-    configuration = Utilities.loadConfiguration(default_configuration_file)
-
+    configuration = Utilities.Configuration()
     for executionStep in executionSteps:
         print("------------------------------------------------------------")
         print("Start " + executionStep.get_name())

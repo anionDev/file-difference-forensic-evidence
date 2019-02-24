@@ -1,5 +1,3 @@
-#---------------------
-#imports:
 import os
 import re
 import sys
@@ -7,25 +5,11 @@ import logging
 import subprocess
 import time
 import Utilities
-#---------------------
-#configuration:
-log_file = os.path.dirname(os.path.abspath(__file__)) + "\\log.log"
-actions = ["C:\\actions\\a.exe", "C:\\actions\\b.exe", "C:\\actions\\c.exe", "C:\\actions\\d.exe", "C:\\actions\\e.exe"]
-amount_of_executions_per_action=3
-loglevel=logging.DEBUG
-#---------------------
-#others:
+
 def get_name():
     return "Calculate characteristical evidences"
 
 def execute(configuration):
-    current_folder=os.path.dirname(os.path.abspath(__file__))
-    logging.basicConfig(filename=log_file,
-                                filemode='a',
-                                format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
-                                datefmt='%Y-%m-%d %H:%M:%S',
-                                level=loglevel)
-    log = logging.getLogger('M105')
     if not os.path.exists(current_folder+"\\ce\\"):
         os.makedirs(current_folder+"\\ce\\")
     class Trace(object):

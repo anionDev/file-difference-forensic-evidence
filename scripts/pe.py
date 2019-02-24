@@ -1,30 +1,14 @@
-#---------------------
-#imports:
 import os
 import logging
 import re
 import subprocess
 import time
 import Utilities
-#---------------------
-#configuration:
-log_file = "log.log"
-actions = ["a", "b", "c", "d", "e"]
-amount_of_executions_per_action=3
-name_of_noise_idiff_file="noise.idiff"
-loglevel=logging.DEBUG
-#---------------------
-#others:
+
 def get_name():
     return "Prepare evidences"
 
 def execute(configuration):
-    logging.basicConfig(filename=log_file,
-                                filemode='a',
-                                format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
-                                datefmt='%Y-%m-%d %H:%M:%S',
-                                level=loglevel)
-    log = logging.getLogger('M105')
     if not os.path.exists(os.getcwd()+ "\\pe\\"):
         os.makedirs(os.getcwd()+ "\\pe\\")
     def get_pe_line(line_splitted_at_tab,operation):

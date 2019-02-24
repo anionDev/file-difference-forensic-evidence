@@ -1,5 +1,3 @@
-#---------------------
-#imports:
 import os
 import sys
 import logging
@@ -7,24 +5,11 @@ import subprocess
 import time
 import re
 import Utilities
-#---------------------
-#configuration:
-log_file = "log.log"
-actions = ["a", "b", "c", "d", "e"]
-amount_of_executions_per_action=3
-loglevel=logging.DEBUG
-#---------------------
-#others:
+
 def get_name():
     return "Merge evidences"
 
 def execute(configuration):
-    logging.basicConfig(filename=log_file,
-                                filemode='a',
-                                format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
-                                datefmt='%Y-%m-%d %H:%M:%S',
-                                level=loglevel)
-    log = logging.getLogger('M105')
     current_folder=os.path.dirname(os.path.abspath(__file__))
     if not os.path.exists(current_folder+"\\me\\"):
         os.makedirs(current_folder+"\\me\\")
