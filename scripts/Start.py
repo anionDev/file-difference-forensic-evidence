@@ -1,6 +1,14 @@
-import os
+import ge
+import pe
+import me
+import ce
 
-os.system('python ge.py')
-os.system('python pe.py')
-os.system('python me.py')
-os.system('python ce.py')
+print("Start generating evidences")
+ge
+print("Start preparing evidences")
+pe
+print("Start merging evidences")
+me
+print("Start finding characteristical evidences")
+ce
+print("Finished")
