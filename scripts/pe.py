@@ -61,19 +61,19 @@ def execute(configuration):
         prepare_evidence_for_file(os.getcwd()+"\\idiff\\noise.idiff",os.getcwd()+ "\\pe\\noise.pe")
         for action in actions:
             for execution_number in range(1, amount_of_executions_per_action + 1):
-                log.info("Start prepare evidence for action " + action + " in iteration " + str(execution_number))
+                configuration.log.info("Start prepare evidence for action " + action + " in iteration " + str(execution_number))
                 try:
                     prepare_evidence_for_file(os.getcwd()+"\\idiff\\"+action+"."+str(execution_number)+".idiff",os.getcwd()+ "\\pe\\"+action+"."+str(execution_number)+".pe")
                 except Exception as exception:
-                    log.error("Exception occurred while prepare evidence  for action " + action + " in iteration " + str(execution_number) + ":")
+                    configuration.log.error("Exception occurred while prepare evidence  for action " + action + " in iteration " + str(execution_number) + ":")
                     logging.error(exception, exc_info=True)
-                log.info("Prepare evidence for action " + action + " in iteration " + str(execution_number) + " finished")
+                configuration.log.info("Prepare evidence for action " + action + " in iteration " + str(execution_number) + " finished")
 
     try:
-        log.info("---------------------")
-        log.info("Start pe.py")
+        configuration.log.info("---------------------")
+        configuration.log.info("Start pe.py")
         prepare_evidence()
     except Exception as exception:
-        log.error("Exception occurred in pe.py:")
+        configuration.log.error("Exception occurred in pe.py:")
         logging.error(exception, exc_info=True)
-    log.info("pe.py finished")
+    configuration.log.info("pe.py finished")

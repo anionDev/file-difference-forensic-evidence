@@ -55,7 +55,7 @@ def execute(configuration):
             file.write("\n".join(characteristic_traces_lines))
     def characteristic_evidence():
         for action in actions:
-            log.info("Start characteristic evidence for action " + action )
+            configuration.log.info("Start characteristic evidence for action " + action )
             try:
                 ignored_files=[current_folder+"\\me\\noise.me"]
                 for ignore_action_name in actions:
@@ -63,15 +63,15 @@ def execute(configuration):
                         ignored_files.append(current_folder+"\\me\\"+ignore_action_name+".me")
                 characteristic_evidence_for_file(current_folder+"\\me\\"+action+".me",ignored_files,current_folder+"\\ce\\"+action+".ce")
             except Exception as exception:
-                log.error("Exception occurred while characteristic evidence  for action " + action + ":")
+                configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
                 logging.error(exception, exc_info=True)
-            log.info("Characteristic evidence for action " + action + " finished")
+            configuration.log.info("Characteristic evidence for action " + action + " finished")
 
     try:
-        log.info("---------------------")
-        log.info("Start ce.py")
+        configuration.log.info("---------------------")
+        configuration.log.info("Start ce.py")
         characteristic_evidence()
     except Exception as exception:
-        log.error("Exception occurred in ce.py:")
+        configuration.log.error("Exception occurred in ce.py:")
         logging.error(exception, exc_info=True)
-    log.info("ce.py finished")
+    configuration.log.info("ce.py finished")

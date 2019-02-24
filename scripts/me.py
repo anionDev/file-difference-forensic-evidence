@@ -72,23 +72,23 @@ def execute(configuration):
     def merge_evidence():
         merge_evidence_for_file([current_folder+"\\pe\\noise.pe"],current_folder+"\\me\\noise.me")
         for action in actions:
-            log.info("Start merge evidence for action " + action)
+            configuration.log.info("Start merge evidence for action " + action)
             try:
                 current_actions=[]
                 for i in range(1, amount_of_executions_per_action + 1):
                     current_actions.append(current_folder+"\\pe\\"+action+"."+str(i)+".pe")
                 merge_evidence_for_file(current_actions,current_folder+"\\me\\"+action+".me")
             except Exception as exception:
-                log.error("Exception occurred while merge evidence  for action " + action + ":")
+                configuration.log.error("Exception occurred while merge evidence  for action " + action + ":")
                 logging.error(exception, exc_info=True)
-            log.info("Merge evidence for action " + action + " finished")
+            configuration.log.info("Merge evidence for action " + action + " finished")
 
 
     try:
-        log.info("---------------------")
-        log.info("Start me.py")
+        configuration.log.info("---------------------")
+        configuration.log.info("Start me.py")
         merge_evidence()
     except Exception as exception:
-        log.error("Exception occurred in me.py:")
+        configuration.log.error("Exception occurred in me.py:")
         logging.error(exception, exc_info=True)
-    log.info("me.py finished")
+    configuration.log.info("me.py finished")

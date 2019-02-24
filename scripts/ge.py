@@ -58,7 +58,7 @@ def execute(configuration):
         save_state_of_vm(name_of_vm_to_analyse)
 
     def generate_evidence(action,iteration_number):
-        log.info("Start evidence generation for action " + action + " in iteration " + str(iteration_number))
+        configuration.log.info("Start evidence generation for action " + action + " in iteration " + str(iteration_number))
         try:
             prepare_generate_evidence()
             continue_vm()
@@ -73,11 +73,11 @@ def execute(configuration):
             execute_idifference_for_action(action,iteration_number)
             delete_trace_image_if_desired(action,iteration_number)
         except Exception as exception:
-            log.error("Exception occurred while generating evidence  for action "+action+" in iteration "+str(iteration_number) + ":")
+            configuration.log.error("Exception occurred while generating evidence  for action "+action+" in iteration "+str(iteration_number) + ":")
             logging.error(exception, exc_info=True)
         finally:
             finalize_generate_evidence()
-        log.info("Evidence generation for action "+action+" in iteration "+str(iteration_number)+" finished")
+        configuration.log.info("Evidence generation for action "+action+" in iteration "+str(iteration_number)+" finished")
 
     def generate_evidence_full():
         for action in actions:
@@ -93,8 +93,8 @@ def execute(configuration):
                 os.remove(init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
             shutil.copy(init_raw_file, init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
-    log.info("---------------------")
-    log.info("Start ge.py")
+    configuration.log.info("---------------------")
+    configuration.log.info("Start ge.py")
     try:
         generate_new_init_raw_file_if_desired()
         add_shared_folder_for_vm_which_has_idifference()
@@ -106,9 +106,9 @@ def execute(configuration):
         else:
             generate_evidence_full()
     except Exception as exception:
-        log.error("Exception occurred in ge.py:")
+        configuration.log.error("Exception occurred in ge.py:")
         logging.error(exception, exc_info=True)
     finally:
         ensure_vm_is_shutdown(name_of_vm_which_has_idifference)
         remove_shared_folder_from_vm_which_has_idifference()
-    log.info("ge.py finished")
+    configuration.log.info("ge.py finished")
