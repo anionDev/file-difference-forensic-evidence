@@ -10,6 +10,7 @@ Then the other scripts will be executed to analyse the idiff-files, extract/merg
 This scripts will only analyse which files the desired action created/changes/deletes on the filesystem. This scripts does neither analyse the content of these files nor analyse any other possible evidences of the desired action.
 You can easily open, edit and debug this project in Visual Studio Community Edition for example.
 To execute this script correctly you need:
+-Oracle VirtualBox
 -A vm which contains idifference2
 -A vm where the desired action(s) can be executed
 -Much time

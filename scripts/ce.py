@@ -64,11 +64,11 @@ def execute(configuration):
                 characteristic_evidence_for_file(current_folder + "\\me\\" + action + ".me",ignored_files,current_folder + "\\ce\\" + action + ".ce")
             except Exception as exception:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
-                logging.error(exception, exc_info=True)
+                configuration.log.error(exception, exc_info=True)
             configuration.log.info("Characteristic evidence for action " + action + " finished")
 
     try:
         characteristic_evidence()
     except Exception as exception:
         configuration.log.error("Exception occurred in ce.py:")
-        logging.error(exception, exc_info=True)
+        configuration.log.error(exception, exc_info=True)

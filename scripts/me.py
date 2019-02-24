@@ -70,7 +70,7 @@ def execute(configuration):
         write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        merge_evidence_for_file([current_folder + "\\pe\\noise.pe"],current_folder + "\\me\\noise.me")
+        merge_evidence_for_file([current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe"],current_folder + "\\me\\" + configuration.name_of_noise_action + ".me")
         for action in actions:
             configuration.log.info("Start merge evidence for action " + action)
             try:
@@ -80,11 +80,11 @@ def execute(configuration):
                 merge_evidence_for_file(current_actions,current_folder + "\\me\\" + action + ".me")
             except Exception as exception:
                 configuration.log.error("Exception occurred while merge evidence  for action " + action + ":")
-                logging.error(exception, exc_info=True)
+                configuration.log.error(exception, exc_info=True)
             configuration.log.info("Merge evidence for action " + action + " finished")
             
     try:
         merge_evidence()
     except Exception as exception:
         configuration.log.error("Exception occurred in me.py:")
-        logging.error(exception, exc_info=True)
+        configuration.log.error(exception, exc_info=True)

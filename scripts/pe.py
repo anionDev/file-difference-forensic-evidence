@@ -58,7 +58,7 @@ def execute(configuration):
                 file.write("%s\n" % line)
 
     def prepare_evidence():
-        prepare_evidence_for_file(os.getcwd() + "\\idiff\\noise.idiff",os.getcwd() + "\\pe\\noise.pe")
+        prepare_evidence_for_file(os.getcwd() + "\\idiff\\" + configuration.name_of_noise_action + ".idiff",os.getcwd() + "\\pe\\" + configuration.name_of_noise_action + ".pe")
         for action in actions:
             for execution_number in range(1, amount_of_executions_per_action + 1):
                 configuration.log.info("Start prepare evidence for action " + action + " in iteration " + str(execution_number))
@@ -66,11 +66,11 @@ def execute(configuration):
                     prepare_evidence_for_file(os.getcwd() + "\\idiff\\" + action + "." + str(execution_number) + ".idiff",os.getcwd() + "\\pe\\" + action + "." + str(execution_number) + ".pe")
                 except Exception as exception:
                     configuration.log.error("Exception occurred while prepare evidence  for action " + action + " in iteration " + str(execution_number) + ":")
-                    logging.error(exception, exc_info=True)
+                    configuration.log.error(exception, exc_info=True)
                 configuration.log.info("Prepare evidence for action " + action + " in iteration " + str(execution_number) + " finished")
 
     try:
         prepare_evidence()
     except Exception as exception:
         configuration.log.error("Exception occurred in pe.py:")
-        logging.error(exception, exc_info=True)
+        configuration.log.error(exception, exc_info=True)

@@ -15,38 +15,36 @@ class Configuration:
     log_file = "log.txt"
     log = logging.getLogger('Calculate evidences')
     amount_of_executions_per_action = 3
-    actions = ["C:\\actions\\a.exe", 
-        "C:\\actions\\b.exe", 
-        "C:\\actions\\c.exe", 
-        "C:\\actions\\d.exe", 
-        "C:\\actions\\e.exe"],
+    actions = ["C:\\programs\\program1.exe", 
+        "C:\\programs\\program2.exe", 
+        "C:\\programs\\program3.exe", 
+        "C:\\programs\\program4.exe"]
     name_of_noise_action = "noise"
-    name_of_noise_idiff_file = "noise.idiff"
-    path_of_init_raw = "C:\\temp\\M105\\initraw\\"
+    name_of_noise_idiff_file = +name_of_noise_action + ".idiff"
+    path_of_init_raw = "C:\\temp\\initraw\\"
     folder_for_idiff_files = os.path.dirname(os.path.abspath(__file__)) + "\\idiff\\"
-    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference = "C:\\temp\\M105\\shared\\"
+    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference = "C:\\temp\\shared\\"
 
-    name_of_vm_to_analyse = "win7-x86"
-    user_of_vm_to_analyse = "win7"
-    password_of_vm_to_analyse = "win7"
+    name_of_vm_to_analyse = "Win10VM"
+    user_of_vm_to_analyse = "user"
+    password_of_vm_to_analyse = "mypassword"
     snapshot_name_for_initial_state_of_vm_to_analyse = "analysis_base"
 
-    name_of_vm_which_has_idifference = "ST_fiwalk"
-    user_of_vm_which_has_idifference = "fiwalk"
-    password_of_which_has_idifference = "fiwalk"
+    name_of_vm_which_has_idifference = "IDifference2VM"
+    user_of_vm_which_has_idifference = "user"
+    password_of_which_has_idifference = "mypassword"
+    path_of_python3_in_vm_which_has_idifference = "/usr/bin/python3"
+    path_of_difference_in_vm_which_has_idifference = "home/" + user_of_vm_which_has_idifference + "/dfxml-master/python/idifference2.py"
 
     generate_init_raw = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference = "sharepoint"
     vboxmanage_executable = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-    noise_recordding_time_in_seconds = 60
+    noise_recording_time_in_seconds = 300
     name_of_init_raw_file = "init.raw"
     name_of_noise_raw_file = name_of_noise_action + ".raw"
     generate_noise = False
     clear_logfile_before_execution = False
     loglevel = logging.DEBUG
-    generate_only_single_idiff_file = False
-    action_if_generate_only_single_idiff_file = "a"
-    iteration_number_if_generate_only_single_idiff_file = 1
     delete_trace_image_after_analysis = False
     use_gui_mode_for_vm = True
 
@@ -71,7 +69,7 @@ def remove_shared_folder_from_vm_which_has_idifference():
 def execute_program_in_vm(name_of_vm,executable_file_with_path,username, password,waiting_time_in_seconds_after_execution):
     start_program(vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution)
 
-def ensure_vm_is_running(name_of_vm):
+def ensure_vm_is_running(name_of_vm,configuration):
     if get_vm_state(name_of_vm) != "running":
         if use_gui_mode_for_vm:
             gui_argument = "gui"
@@ -88,7 +86,7 @@ def ensure_vm_is_in_save_state(name_of_vm):
         start_program(vboxmanage_executable,"controlvm " + name_of_vm + " savestate",5)
 
 def continue_vm():
-    ensure_vm_is_running(name_of_vm_to_analyse)
+    ensure_vm_is_running(name_of_vm_to_analyse,configuration.use_gui_mode_for_vm)
 
 def execute_action_in_vm(action):
     execute_program_in_vm(name_of_vm_to_analyse,action,user_of_vm_to_analyse,password_of_vm_to_analyse,5)
