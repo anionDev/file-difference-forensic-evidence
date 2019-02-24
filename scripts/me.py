@@ -10,9 +10,8 @@ def get_name():
     return "Merge evidences"
 
 def execute(configuration):
-    current_folder = os.path.dirname(os.path.abspath(__file__))
-    if not os.path.exists(current_folder + "\\me\\"):
-        os.makedirs(current_folder + "\\me\\")
+    if not os.path.exists(configuration.current_folder + "\\me\\"):
+        os.makedirs(configuration.current_folder + "\\me\\")
     def write_content_merged(dictionary,output_me_file_with_full_path, label_for_operation):
         result = ""
         for key in dictionary:
@@ -26,8 +25,8 @@ def execute(configuration):
         dictionary_changed = {}
         dictionary_deleted = {}
         for pe_file in input_pe_files_with_full_path:
-            with open(pe_file) as f:
-                lines = f.readlines()
+            with open(pe_file) as file_stream:
+                lines = file_stream.readlines()
                 for line in lines:
                     if('\t' in line):
                         splitted = re.split(r'\t+', line)
@@ -70,18 +69,18 @@ def execute(configuration):
         write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        merge_evidence_for_file([current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe"],current_folder + "\\me\\" + configuration.name_of_noise_action + ".me")
+        merge_evidence_for_file([configuration.current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe"],configuration.current_folder + "\\me\\" + configuration.name_of_noise_action + ".me")
         for action in actions:
-            configuration.log.info("Start merge evidence for action " + action)
+            configuration.log.info("Start merge evidence for action " + action[1])
             try:
                 current_actions = []
-                for i in range(1, amount_of_executions_per_action + 1):
-                    current_actions.append(current_folder + "\\pe\\" + action + "." + str(i) + ".pe")
-                merge_evidence_for_file(current_actions,current_folder + "\\me\\" + action + ".me")
+                for i in range(1, configuration.amount_of_executions_per_action + 1):
+                    current_actions.append(configuration.current_folder + "\\pe\\" + action[1] + "." + str(i) + ".pe")
+                merge_evidence_for_file(configuration.current_actions,configuration.current_folder + "\\me\\" + action[1] + ".me")
             except Exception as exception:
-                configuration.log.error("Exception occurred while merge evidence  for action " + action + ":")
+                configuration.log.error("Exception occurred while merge evidence  for action " + action[1] + ":")
                 configuration.log.error(exception, exc_info=True)
-            configuration.log.info("Merge evidence for action " + action + " finished")
+            configuration.log.info("Merge evidence for action " + action[1] + " finished")
             
     try:
         merge_evidence()

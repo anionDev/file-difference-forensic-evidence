@@ -15,10 +15,10 @@ class Configuration:
     log_file = "log.txt"
     log = logging.getLogger('Calculate evidences')
     amount_of_executions_per_action = 3
-    actions = ["C:\\programs\\program1.exe", 
-        "C:\\programs\\program2.exe", 
-        "C:\\programs\\program3.exe", 
-        "C:\\programs\\program4.exe"]
+    actions = [["C:\\programs\\program1.exe","action1",["argument1","argument2"]], 
+        ["C:\\programs\\program2.exe","action1",[]], 
+        ["C:\\programs\\program3.exe","action2",[]], 
+        ["C:\\programs\\program4.exe","action3",[]]]
     name_of_noise_action = "noise"
     name_of_noise_idiff_file = +name_of_noise_action + ".idiff"
     path_of_init_raw = "C:\\temp\\initraw\\"
@@ -27,12 +27,12 @@ class Configuration:
 
     name_of_vm_to_analyse = "Win10VM"
     user_of_vm_to_analyse = "user"
-    password_of_vm_to_analyse = "mypassword"
-    snapshot_name_for_initial_state_of_vm_to_analyse = "analysis_base"
+    password_of_vm_to_analyse = ""
+    snapshot_name_for_initial_state_of_vm_to_analyse = "initial"
 
-    name_of_vm_which_has_idifference = "IDifference2VM"
+    name_of_vm_which_has_idifference = "Idifference2VM"
     user_of_vm_which_has_idifference = "user"
-    password_of_which_has_idifference = "mypassword"
+    password_of_which_has_idifference = ""
     path_of_python3_in_vm_which_has_idifference = "/usr/bin/python3"
     path_of_difference_in_vm_which_has_idifference = "home/" + user_of_vm_which_has_idifference + "/dfxml-master/python/idifference2.py"
 
@@ -66,8 +66,8 @@ def add_shared_folder_for_vm_which_has_idifference():
 def remove_shared_folder_from_vm_which_has_idifference():
     start_program(vboxmanage_executable, "sharedfolder remove " + name_of_vm_which_has_idifference + " --name " + name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
 
-def execute_program_in_vm(name_of_vm,executable_file_with_path,username, password,waiting_time_in_seconds_after_execution):
-    start_program(vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution)
+def execute_program_in_vm(name_of_vm,executable_file_with_path,username, password,waiting_time_in_seconds_after_execution,arguments):
+    start_program(vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution + " -- " + " ".join(map(lambda argument: "\"" + argument + "\"",arguments)))
 
 def ensure_vm_is_running(name_of_vm,configuration):
     if get_vm_state(name_of_vm) != "running":
@@ -89,7 +89,7 @@ def continue_vm():
     ensure_vm_is_running(name_of_vm_to_analyse,configuration.use_gui_mode_for_vm)
 
 def execute_action_in_vm(action):
-    execute_program_in_vm(name_of_vm_to_analyse,action,user_of_vm_to_analyse,password_of_vm_to_analyse,5)
+    execute_program_in_vm(name_of_vm_to_analyse,action[0],user_of_vm_to_analyse,password_of_vm_to_analyse,5,action[2])
 
 def save_state_of_vm(name_of_vm):
     ensure_vm_is_in_save_state(name_of_vm)
