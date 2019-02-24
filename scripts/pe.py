@@ -5,6 +5,7 @@ import logging
 import re
 import subprocess
 import time
+import Utilities
 #---------------------
 #configuration:
 log_file = "log.log"
@@ -14,6 +15,9 @@ name_of_noise_idiff_file="noise.idiff"
 loglevel=logging.DEBUG
 #---------------------
 #others:
+def get_name():
+    return "Prepare evidences"
+
 logging.basicConfig(filename=log_file,
                             filemode='a',
                             format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',

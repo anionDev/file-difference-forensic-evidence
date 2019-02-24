@@ -9,8 +9,12 @@ import sys
 import shutil
 import re
 import logging
+import Utilities
 #---------------------
 #configuration:
+def get_name():
+    return "Generate evidences"
+
 use_command_line_argument_for_path_of_init_raw=True
 actions = ["C:\\actions\\a.exe", "C:\\actions\\b.exe", "C:\\actions\\c.exe", "C:\\actions\\d.exe", "C:\\actions\\e.exe"]
 name_of_noise_action="noise"

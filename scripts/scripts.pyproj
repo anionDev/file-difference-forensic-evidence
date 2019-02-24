@@ -24,6 +24,9 @@
     <Compile Include="me.py" />
     <Compile Include="pe.py" />
     <Compile Include="Start.py" />
+    <Compile Include="Utilities.py">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />

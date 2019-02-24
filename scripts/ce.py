@@ -6,6 +6,7 @@ import sys
 import logging
 import subprocess
 import time
+import Utilities
 #---------------------
 #configuration:
 log_file = os.path.dirname(os.path.abspath(__file__)) + "\\log.log"
@@ -14,6 +15,9 @@ amount_of_executions_per_action=3
 loglevel=logging.DEBUG
 #---------------------
 #others:
+def get_name():
+    return "Calculate characteristical evidences"
+
 current_folder=os.path.dirname(os.path.abspath(__file__))
 logging.basicConfig(filename=log_file,
                             filemode='a',

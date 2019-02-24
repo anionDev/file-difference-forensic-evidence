@@ -6,6 +6,7 @@ import logging
 import subprocess
 import time
 import re
+import Utilities
 #---------------------
 #configuration:
 log_file = "log.log"
@@ -14,6 +15,9 @@ amount_of_executions_per_action=3
 loglevel=logging.DEBUG
 #---------------------
 #others:
+def get_name():
+    return "Merge evidences"
+
 logging.basicConfig(filename=log_file,
                             filemode='a',
                             format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',
