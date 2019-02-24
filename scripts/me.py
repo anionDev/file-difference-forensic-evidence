@@ -10,13 +10,13 @@ def get_name():
     return "Merge evidences"
 
 def execute(configuration):
-    current_folder=os.path.dirname(os.path.abspath(__file__))
-    if not os.path.exists(current_folder+"\\me\\"):
-        os.makedirs(current_folder+"\\me\\")
+    current_folder = os.path.dirname(os.path.abspath(__file__))
+    if not os.path.exists(current_folder + "\\me\\"):
+        os.makedirs(current_folder + "\\me\\")
     def write_content_merged(dictionary,output_me_file_with_full_path, label_for_operation):
-        result=""
+        result = ""
         for key in dictionary:
-            result=result+key+"\t"+label_for_operation+"\t"+str(dictionary[key])+"\n"
+            result = result + key + "\t" + label_for_operation + "\t" + str(dictionary[key]) + "\n"
         with open(output_me_file_with_full_path, "a") as file:
             file.write(result)
     def merge_evidence_for_file(input_pe_files_with_full_path,output_me_file_with_full_path):
@@ -30,32 +30,32 @@ def execute(configuration):
                 lines = f.readlines()
                 for line in lines:
                     if('\t' in line):
-                        splitted= re.split(r'\t+', line)
-                        found_file=splitted[0]
-                        operation=splitted[1].replace("\n","")
+                        splitted = re.split(r'\t+', line)
+                        found_file = splitted[0]
+                        operation = splitted[1].replace("\n","")
                         if (operation == "a"):
                             if found_file in dictionary_access:
                                 dictionary_access[found_file] = dictionary_access[found_file] + 1
                             else:
                                 dictionary_access[found_file] = 1
-                        if(operation=="m"):
+                        if(operation == "m"):
                             if found_file in dictionary_modify:
-                                dictionary_modify[found_file]=dictionary_modify[found_file]+1
+                                dictionary_modify[found_file] = dictionary_modify[found_file] + 1
                             else:
                                 dictionary_modify[found_file] = 1
-                        if(operation=="c"):
+                        if(operation == "c"):
                             if found_file in dictionary_changed:
-                                dictionary_changed[found_file]=dictionary_changed[found_file]+1
+                                dictionary_changed[found_file] = dictionary_changed[found_file] + 1
                             else:
                                 dictionary_changed[found_file] = 1
-                        if(operation=="cr"):
+                        if(operation == "cr"):
                             if found_file in dictionary_created:
-                                dictionary_created[found_file]=dictionary_created[found_file]+1
+                                dictionary_created[found_file] = dictionary_created[found_file] + 1
                             else:
                                 dictionary_created[found_file] = 1
-                        if(operation=="d"):
+                        if(operation == "d"):
                             if found_file in dictionary_deleted:
-                                dictionary_deleted[found_file]=dictionary_deleted[found_file]+1
+                                dictionary_deleted[found_file] = dictionary_deleted[found_file] + 1
                             else:
                                 dictionary_deleted[found_file] = 1
 
@@ -70,14 +70,14 @@ def execute(configuration):
         write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        merge_evidence_for_file([current_folder+"\\pe\\noise.pe"],current_folder+"\\me\\noise.me")
+        merge_evidence_for_file([current_folder + "\\pe\\noise.pe"],current_folder + "\\me\\noise.me")
         for action in actions:
             configuration.log.info("Start merge evidence for action " + action)
             try:
-                current_actions=[]
+                current_actions = []
                 for i in range(1, amount_of_executions_per_action + 1):
-                    current_actions.append(current_folder+"\\pe\\"+action+"."+str(i)+".pe")
-                merge_evidence_for_file(current_actions,current_folder+"\\me\\"+action+".me")
+                    current_actions.append(current_folder + "\\pe\\" + action + "." + str(i) + ".pe")
+                merge_evidence_for_file(current_actions,current_folder + "\\me\\" + action + ".me")
             except Exception as exception:
                 configuration.log.error("Exception occurred while merge evidence  for action " + action + ":")
                 logging.error(exception, exc_info=True)

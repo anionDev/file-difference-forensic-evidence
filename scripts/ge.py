@@ -13,8 +13,8 @@ def get_name():
     return "Generate evidences"
 
 def execute(configuration):
-    init_raw_file=path_of_init_raw+name_of_init_raw_file
-    init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference=shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference+name_of_init_raw_file
+    init_raw_file = path_of_init_raw + name_of_init_raw_file
+    init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference = shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + name_of_init_raw_file
     if os.path.isfile(log_file) & clear_logfile_before_execution:
         os.remove(log_file)
     if not os.path.exists(shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference):
@@ -34,14 +34,14 @@ def execute(configuration):
         start_program(vboxmanage_executable,"clonemedium disk " + get_hdd_uuid(name_of_vm_to_analyse) + " --format RAW " + shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
     def restore_original_image():
-        start_program(vboxmanage_executable, "snapshot " + name_of_vm_to_analyse + " restore "+ snapshot_name_for_initial_state_of_vm_to_analyse,5)
+        start_program(vboxmanage_executable, "snapshot " + name_of_vm_to_analyse + " restore " + snapshot_name_for_initial_state_of_vm_to_analyse,5)
 
     def execute_idifference_for_action(action,iteration_number):
         ensure_vm_is_running(name_of_vm_which_has_idifference)
-        execute_idifference("/media/sf_"+name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference+"/"+name_of_init_raw_file,"/media/sf_"+name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference+"/"+to_action_name_string(action,iteration_number)+".raw",folder_for_idiff_files+ to_action_name_string(action,iteration_number)+".idiff")
+        execute_idifference("/media/sf_" + name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + name_of_init_raw_file,"/media/sf_" + name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
 
     def execute_idifference(raw_file_1,raw_file_2,result_file):
-        idifference2_command = "\""+vboxmanage_executable+"\" " + "guestcontrol "+name_of_vm_which_has_idifference+" run --exe /usr/bin/python3.4 --username "+user_of_vm_which_has_idifference+" --password "+password_of_which_has_idifference+" --putenv PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --wait-stdout --wait-stderr -- arg home/fiwalk/dfxml-master/python/idifference2.py " +  raw_file_1+" "+raw_file_2
+        idifference2_command = "\"" + vboxmanage_executable + "\" " + "guestcontrol " + name_of_vm_which_has_idifference + " run --exe /usr/bin/python3.4 --username " + user_of_vm_which_has_idifference + " --password " + password_of_which_has_idifference + " --putenv PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --wait-stdout --wait-stderr -- arg home/fiwalk/dfxml-master/python/idifference2.py " + raw_file_1 + " " + raw_file_2
         idifference2_output = subprocess.check_output(idifference2_command).decode()
         file = open(result_file, "w")
         file.write(idifference2_output)
@@ -62,7 +62,7 @@ def execute(configuration):
         try:
             prepare_generate_evidence()
             continue_vm()
-            if(action==name_of_noise_action):
+            if(action == name_of_noise_action):
                 pass
                 time.sleep(noise_recordding_time_in_seconds)
             else:
@@ -73,11 +73,11 @@ def execute(configuration):
             execute_idifference_for_action(action,iteration_number)
             delete_trace_image_if_desired(action,iteration_number)
         except Exception as exception:
-            configuration.log.error("Exception occurred while generating evidence  for action "+action+" in iteration "+str(iteration_number) + ":")
+            configuration.log.error("Exception occurred while generating evidence  for action " + action + " in iteration " + str(iteration_number) + ":")
             logging.error(exception, exc_info=True)
         finally:
             finalize_generate_evidence()
-        configuration.log.info("Evidence generation for action "+action+" in iteration "+str(iteration_number)+" finished")
+        configuration.log.info("Evidence generation for action " + action + " in iteration " + str(iteration_number) + " finished")
 
     def generate_evidence_full():
         for action in actions:
@@ -88,7 +88,7 @@ def execute(configuration):
             if os.path.isfile(init_raw_file):
                 os.remove(init_raw_file)
             restore_original_image()
-            start_program(vboxmanage_executable,"clonemedium disk " + get_hdd_uuid(name_of_vm_to_analyse) + " --format RAW " + init_raw_file )
+            start_program(vboxmanage_executable,"clonemedium disk " + get_hdd_uuid(name_of_vm_to_analyse) + " --format RAW " + init_raw_file)
             if os.path.isfile(init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference):
                 os.remove(init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
             shutil.copy(init_raw_file, init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
