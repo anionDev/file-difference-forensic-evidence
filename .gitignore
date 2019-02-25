@@ -5,6 +5,7 @@
 *.ce
 
 scripts/.vs/*
+scripts/scripts.pyproj.user
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

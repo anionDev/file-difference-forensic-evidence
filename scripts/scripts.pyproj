@@ -5,7 +5,7 @@
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{5480a075-66d9-4eef-a827-102f5b5ba763}</ProjectGuid>
     <ProjectHome />
-    <StartupFile>start.py</StartupFile>
+    <StartupFile>entire_script.py</StartupFile>
     <SearchPath />
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
@@ -20,13 +20,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="ce.py" />
+    <Compile Include="entire_script.py" />
     <Compile Include="ge.py" />
     <Compile Include="me.py" />
     <Compile Include="pe.py" />
-    <Compile Include="start.py" />
-    <Compile Include="utilities.py">
-      <SubType>Code</SubType>
-    </Compile>
+    <Compile Include="shared_utilities.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />

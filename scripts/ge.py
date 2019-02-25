@@ -7,7 +7,7 @@ import sys
 import shutil
 import re
 import logging
-import utilities
+import shared_utilities
 
 def get_name():
     return "Generate evidences"
@@ -31,10 +31,10 @@ def execute(configuration):
             return action[1] + "." + str(iteration_number)
                
     def create_trace_image(action, iteration_number):
-        utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + utilities.get_hdd_uuid(configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
+        shared_utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
     def restore_original_image():
-        utilities.start_program(configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + configuration.snapshot_name_for_initial_state_of_vm_to_analyse,5)
+        shared_utilities.start_program(configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + configuration.snapshot_name_for_initial_state_of_vm_to_analyse,5)
 
     def execute_idifference_for_action(action,iteration_number):
         ensure_vm_is_running(name_of_vm_which_has_idifference,configuration.use_gui_mode_for_vm,configuration)
@@ -55,17 +55,17 @@ def execute(configuration):
         configuration.restore_original_image()
 
     def finalize_generate_evidence():
-        utilities.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
+        shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
 
     def generate_evidence(action,iteration_number):
         configuration.log.info("Start evidence generation for action " + action[1] + " in iteration " + str(iteration_number))
         try:
             prepare_generate_evidence()
-            utilities.continue_vm(configuration)
+            shared_utilities.continue_vm(configuration)
             if(action == configuration.name_of_noise_action):
                 time.sleep(configuration.noise_recording_time_in_seconds)
             else:
-                utilities.execute_action_in_vm(action,configuration)
+                shared_utilities.execute_action_in_vm(action,configuration)
             configuration.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
             create_trace_image(action,iteration_number)
             configuration.restore_original_image()
@@ -88,20 +88,20 @@ def execute(configuration):
             if os.path.isfile(configuration.init_raw_file):
                 os.remove(configuration.init_raw_file)
             configuration.restore_original_image()
-            utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + utilities.get_hdd_uuid(configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.init_raw_file)
+            shared_utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.init_raw_file)
             if os.path.isfile(configuration.init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference):
                 os.remove(configuration.init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
             shutil.copy(configuration.init_raw_file, configuration.init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     try:
         generate_new_init_raw_file_if_desired()
-        utilities.add_shared_folder_for_vm_which_has_idifference(configuration)
-        utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
+        shared_utilities.add_shared_folder_for_vm_which_has_idifference(configuration)
+        shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
         generate_evidence(configuration.name_of_noise_action,0)
         generate_evidence_full()
     except Exception as exception:
         configuration.log.error("Exception occurred in ge.py:")
         configuration.log.error(exception, exc_info=True)
     finally:
-        utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
-        utilities.remove_shared_folder_from_vm_which_has_idifference(configuration)
+        shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
+        shared_utilities.remove_shared_folder_from_vm_which_has_idifference(configuration)

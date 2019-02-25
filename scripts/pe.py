@@ -3,7 +3,7 @@ import logging
 import re
 import subprocess
 import time
-import utilities
+import shared_utilities
 
 def get_name():
     return "Prepare evidences"

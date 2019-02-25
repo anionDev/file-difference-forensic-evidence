@@ -20,7 +20,7 @@ class Configuration:
         ["C:\\programs\\program3.exe","action2",[]], 
         ["C:\\programs\\program4.exe","action3",[]]]
     name_of_noise_action = "noise"
-    name_of_noise_idiff_file = +name_of_noise_action + ".idiff"
+    name_of_noise_idiff_file = name_of_noise_action + ".idiff"
     path_of_init_raw = "C:\\temp\\initraw\\"
     folder_for_idiff_files = os.path.dirname(os.path.abspath(__file__)) + "\\idiff\\"
     shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference = "C:\\temp\\shared\\"

@@ -4,7 +4,7 @@ import logging
 import subprocess
 import time
 import re
-import utilities
+import shared_utilities
 
 def get_name():
     return "Merge evidences"

@@ -1,4 +1,4 @@
-import utilities
+import shared_utilities
 import ge
 import pe
 import me
@@ -7,7 +7,7 @@ import logging
 
 
 def calculate_evidences():
-    configuration = utilities.Configuration()
+    configuration = shared_utilities.Configuration()
     logging.basicConfig(filename=log_file,
                         filemode='a',
                         format='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s',

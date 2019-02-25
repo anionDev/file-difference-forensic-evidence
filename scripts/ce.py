@@ -4,7 +4,7 @@ import sys
 import logging
 import subprocess
 import time
-import utilities
+import shared_utilities
 
 def get_name():
     return "Calculate characteristical evidences"
