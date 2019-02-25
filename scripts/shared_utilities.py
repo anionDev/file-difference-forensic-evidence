@@ -16,9 +16,9 @@ class Configuration:
     log = logging.getLogger('Calculate evidences')
     amount_of_executions_per_action = 3
     actions = [["C:\\programs\\program1.exe","action1",["argument1","argument2"]], 
-        ["C:\\programs\\program2.exe","action1",[]], 
-        ["C:\\programs\\program3.exe","action2",[]], 
-        ["C:\\programs\\program4.exe","action3",[]]]
+        ["C:\\programs\\program2.exe","action2",[]], 
+        ["special:waitUntilUserContinues:my custom action name and description","my custom action name",[]], 
+        ["C:\\programs\\program4.exe","action4",[]]]
     name_of_noise_action = "noise"
     name_of_noise_idiff_file = name_of_noise_action + ".idiff"
     path_of_init_raw = "C:\\temp\\initraw\\"

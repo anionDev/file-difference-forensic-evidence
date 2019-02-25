@@ -65,7 +65,14 @@ def execute(configuration):
             if(action == configuration.name_of_noise_action):
                 time.sleep(configuration.noise_recording_time_in_seconds)
             else:
-                shared_utilities.execute_action_in_vm(action,configuration)
+                if (action.startswith("special:")):
+                    if(action.startswith("special:waitUntilUserContinues:")):
+                        input("Wait for execution of manual action with name '" + action.split(":")[2] + "' in the vm. Please press enter if this action is finished to continue generating evidences.")
+                    else:
+                        raise Exception("Unknown action") 
+                else:
+                    shared_utilities.execute_action_in_vm(action,configuration)
+
             configuration.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
             create_trace_image(action,iteration_number)
             configuration.restore_original_image()
@@ -81,7 +88,7 @@ def execute(configuration):
     def generate_evidence_full():
         for action in actions:
              for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
-                 generate_evidence(action,iteration_number)
+                 generate_evidence(action[0],iteration_number)
 
     def generate_new_init_raw_file_if_desired():
         if generate_init_raw:
