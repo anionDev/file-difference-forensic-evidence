@@ -76,7 +76,7 @@ def execute(configuration):
                 current_actions = []
                 for i in range(1, configuration.amount_of_executions_per_action + 1):
                     current_actions.append(configuration.current_folder + "\\pe\\" + action[1] + "." + str(i) + ".pe")
-                merge_evidence_for_file(configuration.current_actions,configuration.current_folder + "\\me\\" + action[1] + ".me")
+                merge_evidence_for_file(map(lambda current_action: current_action[0],configuration.current_actions),configuration.current_folder + "\\me\\" + action[1] + ".me")
             except Exception as exception:
                 configuration.log.error("Exception occurred while merge evidence  for action " + action[1] + ":")
                 configuration.log.error(exception, exc_info=True)
