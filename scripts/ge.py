@@ -7,7 +7,7 @@ import sys
 import shutil
 import re
 import logging
-import Utilities
+import utilities
 
 def get_name():
     return "Generate evidences"
