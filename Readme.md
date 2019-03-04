@@ -1,4 +1,4 @@
-In this repository scripts should be created which allow to automatically determine characteristical evidences (the characteristical changes in the filesystem) which a (arbitrary) program/action produces.
+In this repository scripts should be created which allow to automatically determine characteristical evidences (the characteristical changes in the filesystem) which a (arbitrary) program/action produces. (The theoretical backgrounds can be found [here](https://pdfs.semanticscholar.org/5c5a/7cc3eada8f528606fc5a15d76063a3d3d530.pdf).)
 Execution-order:
 1. Generate evidences: ge.py
 2. Prepare evidences: pe.py
