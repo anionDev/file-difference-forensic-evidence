@@ -14,7 +14,7 @@ def calculate_evidences():
                         datefmt=configuration.log_dateformat,
                         level=configuration.log_loglevel)
     executionSteps = [
-        #ge,
+        ge,
         pe,
         me,
         ce,

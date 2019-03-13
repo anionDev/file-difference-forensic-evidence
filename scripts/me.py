@@ -70,13 +70,13 @@ def execute(configuration):
 
     def merge_evidence():
         merge_evidence_for_file([configuration.current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe"],configuration.current_folder + "\\me\\" + configuration.name_of_noise_action + ".me")
-        for action in actions:
+        for action in configuration.actions:
             configuration.log.info("Start merge evidence for action " + action[1])
             try:
-                current_actions = []
+                pe_files = []
                 for i in range(1, configuration.amount_of_executions_per_action + 1):
-                    current_actions.append(configuration.current_folder + "\\pe\\" + action[1] + "." + str(i) + ".pe")
-                merge_evidence_for_file(map(lambda current_action: current_action[0],configuration.current_actions),configuration.current_folder + "\\me\\" + action[1] + ".me")
+                    pe_files.append(configuration.current_folder + "\\pe\\" + action[1] + "." + str(i) + ".pe")
+                merge_evidence_for_file(pe_files,configuration.current_folder + "\\me\\" + action[1] + ".me")
             except Exception as exception:
                 configuration.log.error("Exception occurred while merge evidence  for action " + action[1] + ":")
                 configuration.log.error(exception, exc_info=True)

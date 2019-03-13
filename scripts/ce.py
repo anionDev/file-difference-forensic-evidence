@@ -59,8 +59,8 @@ def execute(configuration):
             try:
                 ignored_files = [configuration.current_folder + "\\me\\" + configuration.name_of_noise_action + ".me"]
                 for ignore_action_name in configuration.actions:
-                    if ignore_action_name != action[1]:
-                        ignored_files.append(configuration.current_folder + "\\me\\" + ignore_action_name + ".me")
+                    if ignore_action_name[1] != action[1]:
+                        ignored_files.append(configuration.current_folder + "\\me\\" + ignore_action_name[1] + ".me")
                 characteristic_evidence_for_file(configuration.current_folder + "\\me\\" + action[1] + ".me",ignored_files,configuration.current_folder + "\\ce\\" + action[1] + ".ce")
             except Exception as exception:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
