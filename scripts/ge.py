@@ -62,12 +62,12 @@ def execute(configuration):
         try:
             prepare_generate_evidence()
             shared_utilities.continue_vm(configuration)
-            if(action == configuration.name_of_noise_action):
+            if(action[1] == configuration.name_of_noise_action):
                 time.sleep(configuration.noise_recording_time_in_seconds)
             else:
-                if (action.startswith("special:")):
-                    if(action.startswith("special:waitUntilUserContinues:")):
-                        input("Wait for execution of manual action with name '" + action.split(":")[2] + "' in the vm. Please press enter if this action is finished to continue generating evidences.")
+                if (action[0].startswith("special:")):
+                    if(action[0].startswith("special:waitUntilUserContinues:")):
+                        input("Wait for execution of manual action with name '" + action[0].split(":")[2] + "' in the vm. Please press enter if this action is finished to continue generating evidences.")
                     else:
                         raise Exception("Unknown action") 
                 else:
@@ -88,7 +88,7 @@ def execute(configuration):
     def generate_evidence_full():
         for action in configuration.actions:
              for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
-                 generate_evidence(action[0],iteration_number)
+                 generate_evidence(action,iteration_number)
 
     def generate_new_init_raw_file_if_desired():
         if generate_init_raw:
