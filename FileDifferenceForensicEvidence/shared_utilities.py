@@ -27,14 +27,14 @@ class Configuration:
     folder_for_idiff_files = "C:\\temp\\\\idiff\\"
     shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference = "C:\\temp\\shared\\"
 
-    name_of_vm_to_analyse = "Win10VM"
-    user_of_vm_to_analyse = "user"
+    name_of_vm_to_analyse = "Win10M118"
+    user_of_vm_to_analyse = "Marius"
     password_of_vm_to_analyse = ""
     snapshot_name_for_initial_state_of_vm_to_analyse = "initial"
 
-    name_of_vm_which_has_idifference = "Idifference2VM"
-    user_of_vm_which_has_idifference = "user"
-    password_of_which_has_idifference = ""
+    name_of_vm_which_has_idifference = "ST_fiwalk"
+    user_of_vm_which_has_idifference = "fiwalk"
+    password_of_which_has_idifference = "password"
     path_of_python3_in_vm_which_has_idifference = "/usr/bin/python3"
     path_of_difference_in_vm_which_has_idifference = "home/" + user_of_vm_which_has_idifference + "/dfxml-master/python/idifference2.py"
 
@@ -67,7 +67,7 @@ def add_shared_folder_for_vm_which_has_idifference(configuration):
 def remove_shared_folder_from_vm_which_has_idifference(configuration):
     start_program(configuration.vboxmanage_executable, "sharedfolder remove " + configuration.name_of_vm_which_has_idifference + " --name " + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
 
-def execute_program_in_vm(name_of_vm,executable_file_with_path,username, password,waiting_time_in_seconds_after_execution,arguments):
+def execute_program_in_vm(name_of_vm,executable_file_with_path, username, password, waiting_time_in_seconds_after_execution, arguments):
     if(len(arguments) == 0):
        argument = " -- " + " ".join(map(lambda argument: "\"" + argument + "\"",arguments))
     else:
@@ -98,7 +98,9 @@ def execute_action_in_vm(action,configuration):
 
 def save_state_of_vm(name_of_vm,configuration):
     ensure_vm_is_in_save_state(name_of_vm,configuration)
-
+def create_snapshot(name_of_vm, snapshot_name):
+    start_program(configuration.vboxmanage_executable,"snapshot " + name_of_vm + " take " + snapshot_name,5)
+    
 def start_program_with_parameter_list(executable_with_full_path, arguments, waiting_time_in_seconds_after_execution=1):
     log.debug("Start " + executable_with_full_path + " " + " ".join(arguments))
     argument_list = list()

@@ -74,7 +74,7 @@ def execute(configuration):
 
             configuration.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
             if(configuration.create_snapshots_after_action_execution):
-                pass#TODO create snapshot
+                shared_utilities.create_snapshot(configuration.name_of_vm_to_analyse, "fdfe_snapshot_" + action[1] + "_" + str(iteration_number))
             create_trace_image(action,iteration_number)
             configuration.restore_original_image()
             execute_idifference_for_action(action,iteration_number)
