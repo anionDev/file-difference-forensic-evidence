@@ -8,6 +8,8 @@ import os
 
 def calculate_evidences():
     configuration = shared_utilities.Configuration()
+    if configuration.clear_logfile_before_execution:
+        configuration.clear_logfile_before_execution
     logging.basicConfig(filename=configuration.log_file,
                         filemode=configuration.log_filemode,
                         format=configuration.log_format,
@@ -20,8 +22,6 @@ def calculate_evidences():
         ce,
     ]
     print("Started")
-    if os.path.isfile(configuration.log_file) & configuration.clear_logfile_before_execution:
-        os.remove(configuration.log_file)
     for executionStep in executionSteps:
         print("------------------------------------------------------------")
         print("Start " + executionStep.get_name())

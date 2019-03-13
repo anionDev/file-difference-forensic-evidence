@@ -13,9 +13,9 @@ def get_name():
     return "Generate evidences"
 
 def execute(configuration):
-    if os.path.exists(folder_for_idiff_files):
-        shutil.rmtree(folder_for_idiff_files)
-    os.makedirs(folder_for_idiff_files)
+    if os.path.exists(configuration.folder_for_idiff_files):
+        shutil.rmtree(configuration.folder_for_idiff_files)
+    os.makedirs(configuration.folder_for_idiff_files)
     init_raw_file = configuration.path_of_init_raw + configuration.name_of_init_raw_file
     init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + configuration.name_of_init_raw_file
     if not os.path.exists(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference):
@@ -30,10 +30,10 @@ def execute(configuration):
             return action[1] + "." + str(iteration_number)
                
     def create_trace_image(action, iteration_number):
-        shared_utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
+        shared_utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
     def restore_original_image():
-        shared_utilities.start_program(configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + configuration.snapshot_name_for_initial_state_of_vm_to_analyse,5)
+        shared_utilities.start_program(configuration, configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + configuration.snapshot_name_for_initial_state_of_vm_to_analyse,5)
 
     def execute_idifference_for_action(action,iteration_number):
         ensure_vm_is_running(name_of_vm_which_has_idifference,configuration.use_gui_mode_for_vm,configuration)
@@ -51,7 +51,7 @@ def execute(configuration):
             os.remove(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
     def prepare_generate_evidence():
-        configuration.restore_original_image()
+        restore_original_image()
 
     def finalize_generate_evidence():
         shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
@@ -76,7 +76,7 @@ def execute(configuration):
             if(configuration.create_snapshots_after_action_execution):
                 shared_utilities.create_snapshot(configuration.name_of_vm_to_analyse, "fdfe_snapshot_" + action[1] + "_" + str(iteration_number))
             create_trace_image(action,iteration_number)
-            configuration.restore_original_image()
+            restore_original_image()
             execute_idifference_for_action(action,iteration_number)
             delete_trace_image_if_desired(action,iteration_number)
         except Exception as exception:
@@ -92,14 +92,14 @@ def execute(configuration):
                  generate_evidence(action,iteration_number)
 
     def generate_new_init_raw_file_if_desired():
-        if generate_init_raw:
-            if os.path.isfile(configuration.init_raw_file):
-                os.remove(configuration.init_raw_file)
-            configuration.restore_original_image()
-            shared_utilities.start_program(configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.init_raw_file)
-            if os.path.isfile(configuration.init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference):
-                os.remove(configuration.init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
-            shutil.copy(configuration.init_raw_file, configuration.init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+        if configuration.generate_init_raw:
+            if os.path.isfile(init_raw_file):
+                os.remove(init_raw_file)
+            restore_original_image()
+            shared_utilities.start_program(configuration, configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file)
+            if os.path.isfile(init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference):
+                os.remove(init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+            shutil.copy(init_raw_file, init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     try:
         generate_new_init_raw_file_if_desired()

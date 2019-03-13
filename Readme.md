@@ -1,3 +1,4 @@
+## Description
 In this repository scripts should be created which allow to automatically determine characteristical evidences (the characteristical changes in the filesystem) which a (arbitrary) program/action produces. (The theoretical backgrounds can be found [here](https://pdfs.semanticscholar.org/5c5a/7cc3eada8f528606fc5a15d76063a3d3d530.pdf).)
 Execution-order:
 1. Generate evidences: ge.py
@@ -10,11 +11,18 @@ Then the other scripts will be executed to analyse the idiff-files, extract/merg
 This scripts will only analyse which files the desired action created/changes/deletes on the filesystem. This scripts does neither analyse the content of these files nor analyse any other possible evidences of the desired action.
 You can easily open, edit and debug this project in Visual Studio Community Edition for example.
 To execute this script correctly you need:
--Oracle VirtualBox
--A vm which contains idifference2
--A vm where the desired action(s) can be executed
--Much time
--Much disk space
-Before executing the scripts you must probably adjust the variables in the configuration (in scripts/Utilities.py).
+- Oracle VirtualBox
+- A vm which contains idifference2
+- A vm where the desired action(s) can be executed
+- Much time
+- Much disk space
 
+## Usage
+
+1. Prepare the vm which contains the os where you want to execute the program/action. This vm is called vm_to_analyse. vm_to_analyse should be suspended initially.
+2. Prepare the vm which contains idifference2. This vm is called vm_which_has_idifference. vm_which_has_idifference should be shut down initially.
+3. Adjust the paths and names in FileDifferenceForensicEvidence/shared_utilities.py
+
+## Licence
+This project is licenced under the terms of LGPL.
 If you like this project and it has helped you, please send me a cookie. I would be glad.
