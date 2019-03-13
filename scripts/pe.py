@@ -59,7 +59,7 @@ def execute(configuration):
 
     def prepare_evidence():
         prepare_evidence_for_file(configuration.current_folder + "\\idiff\\" + configuration.name_of_noise_idiff_file,os.getcwd() + "\\pe\\" + configuration.name_of_noise_action + ".pe")
-        for action in actions:
+        for action in configuration.actions:
             for execution_number in range(1, configuration.amount_of_executions_per_action + 1):
                 configuration.log.info("Start prepare evidence for action " + action[1] + " in iteration " + str(execution_number))
                 try:

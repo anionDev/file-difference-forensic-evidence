@@ -86,7 +86,7 @@ def execute(configuration):
         configuration.log.info("Evidence generation for action " + action[1] + " in iteration " + str(iteration_number) + " finished")
 
     def generate_evidence_full():
-        for action in actions:
+        for action in configuration.actions:
              for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
                  generate_evidence(action[0],iteration_number)
 

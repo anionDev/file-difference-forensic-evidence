@@ -12,13 +12,18 @@ import shutil
 
 class Configuration:
     current_folder = os.path.dirname(os.path.abspath(__file__))
-    log_file = "log.txt"
+    log_file = "log.log"
+    log_filemode = 'a'
+    log_format ='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s'
+    log_dateformat = '%Y-%m-%d %H:%M:%S'
+    log_loglevel = logging.DEBUG
     log = logging.getLogger('Calculate evidences')
     amount_of_executions_per_action = 3
     actions = [["C:\\programs\\program1.exe","action1",["argument1","argument2"]], 
         ["C:\\programs\\program2.exe","action2",[]], 
-        ["special:waitUntilUserContinues:my custom action name and description","my custom action name",[]], 
-        ["C:\\programs\\program4.exe","action4",[]]]
+        ["special:waitUntilUserContinues:my custom action name and description","action3",[]], 
+        ["C:\\programs\\program4.exe","action4",[]], 
+        ["C:\\programs\\program5.exe","action5",[]]]
     name_of_noise_action = "noise"
     name_of_noise_idiff_file = name_of_noise_action + ".idiff"
     path_of_init_raw = "C:\\temp\\initraw\\"
@@ -44,7 +49,6 @@ class Configuration:
     name_of_noise_raw_file = name_of_noise_action + ".raw"
     generate_noise = False
     clear_logfile_before_execution = False
-    loglevel = logging.DEBUG
     delete_trace_image_after_analysis = False
     use_gui_mode_for_vm = True
 
