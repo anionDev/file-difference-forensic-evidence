@@ -3,6 +3,7 @@ import sys
 import logging
 import subprocess
 import time
+import shutil
 import re
 import shared_utilities
 
@@ -10,8 +11,9 @@ def get_name():
     return "Merge evidences"
 
 def execute(configuration):
-    if not os.path.exists(configuration.current_folder + "\\me\\"):
-        os.makedirs(configuration.current_folder + "\\me\\")
+    if os.path.exists(configuration.current_folder + "\\me\\"):
+        shutil.rmtree(configuration.current_folder + "\\me\\")
+    os.makedirs(configuration.current_folder + "\\me\\")
     def write_content_merged(dictionary,output_me_file_with_full_path, label_for_operation):
         result = ""
         for key in dictionary:

@@ -11,10 +11,10 @@ import argparse
 import shutil
 
 class Configuration:
-    current_folder = os.path.dirname(os.path.abspath(__file__))
+    current_folder = os.path.dirname(os.path.abspath(__file__)) + "\\result"
     log_file = "log.log"
     log_filemode = 'a'
-    log_format ='%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s'
+    log_format = '%(asctime)s.%(msecs)03d %(name)s [%(levelname)s] %(message)s'
     log_dateformat = '%Y-%m-%d %H:%M:%S'
     log_loglevel = logging.DEBUG
     log = logging.getLogger('Calculate evidences')

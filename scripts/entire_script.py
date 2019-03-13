@@ -4,7 +4,7 @@ import pe
 import me
 import ce
 import logging
-
+import os
 
 def calculate_evidences():
     configuration = shared_utilities.Configuration()
@@ -20,6 +20,8 @@ def calculate_evidences():
         ce,
     ]
     print("Started")
+    if os.path.isfile(configuration.log_file) & configuration.clear_logfile_before_execution:
+        os.remove(configuration.log_file)
     for executionStep in executionSteps:
         print("------------------------------------------------------------")
         print("Start " + executionStep.get_name())

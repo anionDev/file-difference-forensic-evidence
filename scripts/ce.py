@@ -2,6 +2,7 @@ import os
 import re
 import sys
 import logging
+import shutil
 import subprocess
 import time
 import shared_utilities
@@ -10,8 +11,9 @@ def get_name():
     return "Calculate characteristical evidences"
 
 def execute(configuration):
-    if not os.path.exists(configuration.current_folder + "\\ce\\"):
-        os.makedirs(configuration.current_folder + "\\ce\\")
+    if os.path.exists(configuration.current_folder + "\\ce\\"):
+        shutil.rmtree(configuration.current_folder + "\\ce\\")
+    os.makedirs(configuration.current_folder + "\\ce\\")
     class Trace(object):
         def __init__(self, file, operation,amount_of_occurrence):
             self.file = file
@@ -36,8 +38,6 @@ def execute(configuration):
     def characteristic_evidence_for_file(me_file_with_full_path,me_files_of_ignored_traced,result_ce_file_with_full_path):
         if os.path.exists(result_ce_file_with_full_path):
             os.remove(result_ce_file_with_full_path)
-        with open(result_ce_file_with_full_path, 'w'):
-            pass
         trace_of_action = get_trace_from_me_file(me_file_with_full_path)
         ignored_traces = set()
         for me_file_of_ignored_traced in me_files_of_ignored_traced:

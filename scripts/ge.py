@@ -13,14 +13,13 @@ def get_name():
     return "Generate evidences"
 
 def execute(configuration):
+    if os.path.exists(folder_for_idiff_files):
+        shutil.rmtree(folder_for_idiff_files)
+    os.makedirs(folder_for_idiff_files)
     init_raw_file = configuration.path_of_init_raw + configuration.name_of_init_raw_file
     init_war_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + configuration.name_of_init_raw_file
-    if os.path.isfile(configuration.log_file) & clear_logfile_before_execution:
-        os.remove(configuration.log_file)
     if not os.path.exists(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference):
         os.makedirs(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
-    if not os.path.exists(configuration.folder_for_idiff_files):
-        os.makedirs(configuration.folder_for_idiff_files)
     if not os.path.exists(configuration.path_of_init_raw):
         os.makedirs(configuration.path_of_init_raw)
 
