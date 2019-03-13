@@ -19,15 +19,12 @@ class Configuration:
     log_loglevel = logging.DEBUG
     log = logging.getLogger('Calculate evidences')
     amount_of_executions_per_action = 3
-    actions = [["C:\\programs\\program1.exe","action1",["argument1","argument2"]], 
-        ["C:\\programs\\program2.exe","action2",[]], 
-        ["Special:WaitUntilUserContinues:description of custom action","action3",[]], 
-        ["C:\\programs\\program4.exe","action4",[]], 
-        ["C:\\programs\\program5.exe","action5",[]]]
+    actions = [["Special:WaitUntilUserContinues:install program","action1",[]], 
+        ["Special:WaitUntilUserContinues:uninstall program","action2",[]],]
     name_of_noise_action = "noise"
     name_of_noise_idiff_file = name_of_noise_action + ".idiff"
     path_of_init_raw = "C:\\temp\\initraw\\"
-    folder_for_idiff_files = os.path.dirname(os.path.abspath(__file__)) + "\\idiff\\"
+    folder_for_idiff_files = "C:\\temp\\\\idiff\\"
     shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference = "C:\\temp\\shared\\"
 
     name_of_vm_to_analyse = "Win10VM"
@@ -47,10 +44,10 @@ class Configuration:
     noise_recording_time_in_seconds = 300
     name_of_init_raw_file = "init.raw"
     name_of_noise_raw_file = name_of_noise_action + ".raw"
-    generate_noise = False
-    clear_logfile_before_execution = False
+    clear_logfile_before_execution = True
     delete_trace_image_after_analysis = False
     use_gui_mode_for_vm = True
+    create_snapshots_after_action_execution = True
 
 def get_vm_state(vm_name):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)
@@ -71,7 +68,11 @@ def remove_shared_folder_from_vm_which_has_idifference(configuration):
     start_program(configuration.vboxmanage_executable, "sharedfolder remove " + configuration.name_of_vm_which_has_idifference + " --name " + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
 
 def execute_program_in_vm(name_of_vm,executable_file_with_path,username, password,waiting_time_in_seconds_after_execution,arguments):
-    start_program(configuration.vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution + " -- " + " ".join(map(lambda argument: "\"" + argument + "\"",arguments)))
+    if(len(arguments) == 0):
+       argument = " -- " + " ".join(map(lambda argument: "\"" + argument + "\"",arguments))
+    else:
+       argument = ""
+    start_program(configuration.vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password,waiting_time_in_seconds_after_execution + argument)
 
 def ensure_vm_is_running(name_of_vm,configuration):
     if get_vm_state(name_of_vm) != "running":
