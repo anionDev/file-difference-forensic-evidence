@@ -21,7 +21,7 @@ class Configuration:
     amount_of_executions_per_action = 3
     actions = [["C:\\programs\\program1.exe","action1",["argument1","argument2"]], 
         ["C:\\programs\\program2.exe","action2",[]], 
-        ["special:waitUntilUserContinues:my custom action name and description","action3",[]], 
+        ["Special:WaitUntilUserContinues:description of custom action","action3",[]], 
         ["C:\\programs\\program4.exe","action4",[]], 
         ["C:\\programs\\program5.exe","action5",[]]]
     name_of_noise_action = "noise"

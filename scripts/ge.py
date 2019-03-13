@@ -65,9 +65,9 @@ def execute(configuration):
             if(action[1] == configuration.name_of_noise_action):
                 time.sleep(configuration.noise_recording_time_in_seconds)
             else:
-                if (action[0].startswith("special:")):
-                    if(action[0].startswith("special:waitUntilUserContinues:")):
-                        input("Wait for execution of manual action with name '" + action[0].split(":")[2] + "' in the vm. Please press enter if this action is finished to continue generating evidences.")
+                if (action[0].lower().startswith("Special:".lower())):
+                    if(action[0].lower().startswith("Special:WaitUntilUserContinues:".lower())):
+                        input("Wait for execution of manual action " + action[1] + " ('" + action[0].split(":")[2] + "') in the vm. Please press enter if this action is finished to continue generating evidences.")
                     else:
                         raise Exception("Unknown action") 
                 else:
