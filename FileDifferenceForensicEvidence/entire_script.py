@@ -3,13 +3,14 @@ import ge
 import pe
 import me
 import ce
+from shared_utilities import Configuration
 import logging
 import os
 
 def calculate_evidences():
-    configuration = shared_utilities.Configuration()
-    if configuration.clear_logfile_before_execution:
-        configuration.clear_logfile_before_execution
+    configuration : Configuration = shared_utilities.Configuration()
+    if configuration.clear_logfile_before_execution and os.path.isfile(configuration.log_file):
+        open(configuration.log_file, 'w').close()
     logging.basicConfig(filename=configuration.log_file,
                         filemode=configuration.log_filemode,
                         format=configuration.log_format,
@@ -22,11 +23,11 @@ def calculate_evidences():
         ce,
     ]
     print("Started")
-    for executionStep in executionSteps:
+    for execution_step in executionSteps:
         print("------------------------------------------------------------")
-        print("Start " + executionStep.get_name())
-        executionStep.execute(configuration)
-        print("Finished " + executionStep.get_name())
+        print("Start " + execution_step.get_name())
+        execution_step.execute(configuration)
+        print("Finished " + execution_step.get_name())
     print("------------------------------------------------------------")
     print("Finished")
 

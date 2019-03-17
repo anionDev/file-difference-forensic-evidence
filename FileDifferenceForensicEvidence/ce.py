@@ -1,16 +1,12 @@
 import os
+from shared_utilities import Configuration
 import re
-import sys
-import logging
 import shutil
-import subprocess
-import time
-import shared_utilities
 
 def get_name():
     return "Calculate characteristical evidences"
 
-def execute(configuration):
+def execute(configuration : Configuration):
     if os.path.exists(configuration.current_folder + "\\ce\\"):
         shutil.rmtree(configuration.current_folder + "\\ce\\")
     os.makedirs(configuration.current_folder + "\\ce\\")
@@ -36,7 +32,7 @@ def execute(configuration):
                     traces.add(Trace(splitted[0],splitted[1],int(splitted[2])))
         return traces
     def characteristic_evidence_for_file(me_file_with_full_path,me_files_of_ignored_traced,result_ce_file_with_full_path):
-        if os.path.exists(result_ce_file_with_full_path):
+        if os.path.exists(result_ce_file_with_full_path and configuration.overwrite_existing_files_and_snapshots):
             os.remove(result_ce_file_with_full_path)
         trace_of_action = get_trace_from_me_file(me_file_with_full_path)
         ignored_traces = set()
@@ -62,9 +58,9 @@ def execute(configuration):
                     if ignore_action_name[1] != action[1]:
                         ignored_files.append(configuration.current_folder + "\\me\\" + ignore_action_name[1] + ".me")
                 characteristic_evidence_for_file(configuration.current_folder + "\\me\\" + action[1] + ".me",ignored_files,configuration.current_folder + "\\ce\\" + action[1] + ".ce")
-            except Exception as exception:
+            except Exception as exception_object:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
-                configuration.log.error(exception, exc_info=True)
+                configuration.log.error(exception_object, exc_info=True)
             configuration.log.info("Characteristic evidence for action " + action[1] + " finished")
 
     try:

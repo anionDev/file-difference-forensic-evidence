@@ -1,15 +1,12 @@
 import os
-import logging
 import re
-import subprocess
-import time
 import shutil
-import shared_utilities
+from shared_utilities import Configuration
 
 def get_name():
     return "Prepare evidences"
 
-def execute(configuration):
+def execute(configuration : Configuration):
     if os.path.exists(configuration.current_folder + "\\pe\\"):
         shutil.rmtree(configuration.current_folder + "\\pe\\")
     os.makedirs(configuration.current_folder + "\\pe\\")
@@ -60,15 +57,15 @@ def execute(configuration):
                 file.write("%s\n" % line)
 
     def prepare_evidence():
-        prepare_evidence_for_file(configuration.current_folder + "\\idiff\\" + configuration.name_of_noise_idiff_file,configuration.current_folder +  "\\pe\\" + configuration.name_of_noise_action + ".pe")
+        prepare_evidence_for_file(configuration.current_folder + "\\idiff\\" + configuration.name_of_noise_idiff_file,configuration.current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe")
         for action in configuration.actions:
             for execution_number in range(1, configuration.amount_of_executions_per_action + 1):
                 configuration.log.info("Start prepare evidence for action " + action[1] + " in iteration " + str(execution_number))
                 try:
                     prepare_evidence_for_file(configuration.current_folder + "\\idiff\\" + action[1] + "." + str(execution_number) + ".idiff",configuration.current_folder + "\\pe\\" + action[1] + "." + str(execution_number) + ".pe")
-                except Exception as exception:
+                except Exception as exception_object:
                     configuration.log.error("Exception occurred while prepare evidence  for action " + action[1] + " in iteration " + str(execution_number) + ":")
-                    configuration.log.error(exception, exc_info=True)
+                    configuration.log.error(exception_object, exc_info=True)
                 configuration.log.info("Prepare evidence for action " + action[1] + " in iteration " + str(execution_number) + " finished")
 
     try:
