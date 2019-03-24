@@ -26,13 +26,13 @@ def execute(configuration: Configuration):
             return action[1] + "." + str(iteration_number)
                
     def create_trace_image(action, iteration_number:int):
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration,configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration,configuration.name_of_vm_to_analyse) + " --format RAW " + configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw",0,"Clone medium (Create raw-file with traces for "+action[1]+")")
 
     def restore_original_image():
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + configuration.snapshot_name_for_initial_state_of_vm_to_analyse,5)
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + configuration.snapshot_name_for_initial_state_of_vm_to_analyse,5,"Restore original state of vm")
 
     def execute_idifference_for_action(action,iteration_number):
-        ensure_vm_is_running(name_of_vm_which_has_idifference,configuration.use_gui_mode_for_vm,configuration)
+        shared_utilities.ensure_vm_is_running(name_of_vm_which_has_idifference,configuration.use_gui_mode_for_vm,configuration)
         execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + configuration.name_of_init_raw_file,"/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
 
     def execute_idifference(raw_file_1,raw_file_2,result_file):
@@ -91,8 +91,8 @@ def execute(configuration: Configuration):
 
     def generate_new_init_raw_file():
         restore_original_image()
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file)
-        destination =init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file, "Clone medium (Create raw-file of initial state)")
+        destination = init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference
         if os.path.isfile(destination) and configuration.overwrite_existing_files_and_snapshots:
             os.remove(destination)
         shutil.copy(init_raw_file, destination)
@@ -107,7 +107,7 @@ def execute(configuration: Configuration):
                 generate_new_init_raw_file()
     try:
         generate_new_init_raw_file_if_desired()
-        shared_utilities.add_shared_folder_for_vm_which_has_idifference(configuration)
+        shared_utilities.ensure_vm_which_has_idifference_has_shared_folder(configuration)
         shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
         generate_evidence(configuration.noise_action,0)
         generate_evidence_full()
