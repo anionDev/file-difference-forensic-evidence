@@ -21,7 +21,7 @@ class Configuration:
     name_of_noise_idiff_file :str = name_of_noise_action + ".idiff"
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
-    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = folder_for_idiff_files
+    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = working_directory + "shared\\"
 
     name_of_vm_to_analyse :str = "M118_A"
     user_of_vm_to_analyse :str = "Marius"
