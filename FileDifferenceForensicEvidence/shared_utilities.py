@@ -7,7 +7,7 @@ import re
 class Configuration:
     current_folder = os.path.dirname(os.path.abspath(__file__)) + "\\result"
     project_name = "fdfe"
-    working_directory :str = f"C:\\{project_name}\\"
+    working_directory :str = f"C:\\projects\\{project_name}\\"
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s %(name)s [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -35,11 +35,11 @@ class Configuration:
     path_of_difference_in_vm_which_has_idifference :str = "home/" + user_of_vm_which_has_idifference + "/dfxml-master/python/idifference2.py"
 
     overwrite_existing_files_and_snapshots :bool = True
-    generate_init_raw :bool = False
+    generate_init_raw :bool = True
     overwrite_existing_init_raw :bool = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = "sharepoint"
     vboxmanage_executable :str = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-    noise_recording_time_in_seconds = 10 #Recommended value for productive usage: 300
+    noise_recording_time_in_seconds = 300 #Recommended value for productive usage: 300
     name_of_init_raw_file :str = "init.raw"
     name_of_noise_raw_file :str = name_of_noise_action + ".raw"
     clear_logfile_before_execution :bool = True

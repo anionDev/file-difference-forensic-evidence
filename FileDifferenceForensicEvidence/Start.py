@@ -6,6 +6,7 @@ import ce
 from shared_utilities import Configuration
 import logging
 import os
+import subprocess
 import sys
 
 def calculate_evidences():
