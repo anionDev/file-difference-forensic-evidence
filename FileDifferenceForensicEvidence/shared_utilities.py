@@ -21,7 +21,7 @@ class Configuration:
     working_directory :str = "C:\\fdfe\\"
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
-    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = working_directory + "shared\\"
+    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = folder_for_idiff_files
 
     name_of_vm_to_analyse :str = "M118_A"
     user_of_vm_to_analyse :str = "Marius"
