@@ -89,17 +89,22 @@ def execute(configuration: Configuration):
              for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
                  generate_evidence(action, iteration_number)
 
+    def generate_new_init_raw_file():
+        restore_original_image()
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file)
+        destination =init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference
+        if os.path.isfile(destination) and configuration.overwrite_existing_files_and_snapshots:
+            os.remove(destination)
+        shutil.copy(init_raw_file, destination)
+
     def generate_new_init_raw_file_if_desired():
         if configuration.generate_init_raw:
-            if os.path.isfile(init_raw_file) and configuration.overwrite_existing_files_and_snapshots:
-                os.remove(init_raw_file)
-            restore_original_image()
-            shared_utilities.start_program(configuration,configuration.vboxmanage_executable,"clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file)
-            destination =init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference
-            if os.path.isfile(destination) and configuration.overwrite_existing_files_and_snapshots:
-                os.remove(destination)
-            shutil.copy(init_raw_file, destination)
-
+            if(os.path.isfile(configuration.init_raw_file)):
+                if(configuration.overwrite_existing_init_raw):
+                    os.remove(init_raw_file)
+                    generate_new_init_raw_file()
+            else:
+                generate_new_init_raw_file()
     try:
         generate_new_init_raw_file_if_desired()
         shared_utilities.add_shared_folder_for_vm_which_has_idifference(configuration)

@@ -36,6 +36,7 @@ class Configuration:
 
     overwrite_existing_files_and_snapshots :bool = True
     generate_init_raw :bool = False
+    overwrite_existing_init_raw :bool = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = "sharepoint"
     vboxmanage_executable :str = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
     noise_recording_time_in_seconds = 60
