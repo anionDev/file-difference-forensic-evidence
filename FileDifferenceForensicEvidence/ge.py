@@ -15,6 +15,7 @@ def execute(configuration: Configuration):
     os.makedirs(configuration.folder_for_idiff_files)
     init_raw_file = configuration.path_of_init_raw + configuration.name_of_init_raw_file
     init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + configuration.name_of_init_raw_file
+    executed_actions = []
     if not os.path.exists(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference):
         os.makedirs(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
     if not os.path.exists(configuration.path_of_init_raw):
@@ -81,8 +82,7 @@ def execute(configuration: Configuration):
                     shared_utilities.create_snapshot(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
                 create_trace_image(action,iteration_number,result_file_name)
                 restore_original_image()
-                execute_idifference_for_action(action,iteration_number)
-                delete_trace_image_if_desired(action,iteration_number)
+                executed_actions.append([action,iteration_number])
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while generating evidence  for action " + action[1] + " in iteration " + str(iteration_number) + ":")
                 configuration.log.error(exception_object, exc_info=True)
@@ -110,11 +110,16 @@ def execute(configuration: Configuration):
                     generate_new_init_raw_file()
             else:
                 generate_new_init_raw_file()
+    def generate_idiff_files():
+        for executed_action in executed_actions:
+            execute_idifference_for_action(executed_action[0], executed_action[1])
+            delete_trace_image_if_desired(executed_action[0], executed_action[1])
     try:
         generate_new_init_raw_file_if_desired()
         shared_utilities.ensure_vm_which_has_idifference_has_shared_folder(configuration)
         shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
         generate_evidence(configuration.noise_action,0)
+        generate_idiff_files()
         generate_evidence_full()
     except Exception as exception:
         configuration.log.error("Exception occurred in ge.py:")
