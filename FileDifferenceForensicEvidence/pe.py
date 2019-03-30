@@ -7,9 +7,9 @@ def get_name():
     return "Prepare evidences"
 
 def execute(configuration: Configuration):
-    if os.path.exists(configuration.current_folder + "\\pe\\"):
-        shutil.rmtree(configuration.current_folder + "\\pe\\")
-    os.makedirs(configuration.current_folder + "\\pe\\")
+    if os.path.exists(configuration.working_directory + "pe\\"):
+        shutil.rmtree(configuration.working_directory + "pe\\")
+    os.makedirs(configuration.working_directory + "pe\\")
     def get_pe_line(line_splitted_at_tab,operation:str):
         result = list()
         try:
@@ -57,12 +57,12 @@ def execute(configuration: Configuration):
                 file.write("%s\n" % line)
 
     def prepare_evidence():
-        prepare_evidence_for_file(configuration.current_folder + "\\idiff\\" + configuration.name_of_noise_idiff_file,configuration.current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe")
+        prepare_evidence_for_file(configuration.working_directory + "idiff\\" + configuration.name_of_noise_idiff_file,configuration.working_directory + "pe\\" + configuration.name_of_noise_action + ".pe")
         for action in configuration.actions:
             for execution_number in range(1, configuration.amount_of_executions_per_action + 1):
                 configuration.log.info("Start prepare evidence for action " + action[1] + " in iteration " + str(execution_number))
                 try:
-                    prepare_evidence_for_file(configuration.current_folder + "\\idiff\\" + action[1] + "." + str(execution_number) + ".idiff",configuration.current_folder + "\\pe\\" + action[1] + "." + str(execution_number) + ".pe")
+                    prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action[1] + "." + str(execution_number) + ".idiff",configuration.working_directory + "pe\\" + action[1] + "." + str(execution_number) + ".pe")
                 except Exception as exception_object:
                     configuration.log.error("Exception occurred while prepare evidence  for action " + action[1] + " in iteration " + str(execution_number) + ":")
                     configuration.log.error(exception_object, exc_info=True)

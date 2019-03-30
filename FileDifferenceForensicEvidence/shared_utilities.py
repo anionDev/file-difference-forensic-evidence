@@ -5,32 +5,35 @@ import time
 import re
 
 class Configuration:
-    current_folder = os.path.dirname(os.path.abspath(__file__)) + "\\result"
     project_name = "fdfe"
-    working_directory :str = f"C:\\projects\\{project_name}\\"
+    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
     log_loglevel = logging.DEBUG
     log = logging.getLogger(project_name)
-    amount_of_executions_per_action = 3
-    actions = [["Special:WaitUntilUserContinues:install program","01_installProgram",[]], 
-        ["Special:WaitUntilUserContinues:start without login to program","02_startWithoutLoginToProgram",[]],
-        ["Special:WaitUntilUserContinues:start with login to program","03_startWithLoginToProgram",[]],
-        ["Special:WaitUntilUserContinues:start with login to program and re-lock","04_startWithLoginToProgramAndReLock",[]],
-        ["Special:WaitUntilUserContinues:uninstall program","05_uninstallProgram",[]],
-    ]
-    name_of_noise_action :str = "noise"
-    noise_action = ["Special:Noise:",name_of_noise_action,[]]
-    name_of_noise_idiff_file :str = name_of_noise_action + ".idiff"
-    path_of_init_raw :str = working_directory
-    folder_for_idiff_files :str = working_directory + "idiff\\"
-    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = working_directory + "shared\\"
 
     name_of_vm_to_analyse :str = "M118_A"
     user_of_vm_to_analyse :str = "Marius"
     password_of_vm_to_analyse :str = ""
     snapshot_name_for_initial_state_of_vm_to_analyse :str = "initial"
+
+    amount_of_executions_per_action = 3
+    actions = [
+        ["Special:WaitUntilUserContinues:install program","01_InstallProgram",[],snapshot_name_for_initial_state_of_vm_to_analyse], 
+        ["Special:WaitUntilUserContinues:start program","02_StartProgram",[],"prepared_01_after_action1_program_installed"],
+        ["Special:WaitUntilUserContinues:login to program","03_LoginToProgram",[],"prepared_02_after_action2_program_started"],
+        ["Special:WaitUntilUserContinues:lock program","04_LockProgram",[],"prepared_03_after_action3_logged_in"],
+        ["Special:WaitUntilUserContinues:uninstall program","05_UninstallProgram",[],"prepared_04_after_action3_logged_in_and_closed_program"],
+    ]
+
+    name_of_noise_action :str = "noise"
+    noise_action = ["Special:Noise:", name_of_noise_action,[], snapshot_name_for_initial_state_of_vm_to_analyse]
+    name_of_noise_idiff_file :str = name_of_noise_action + ".idiff"
+    path_of_init_raw :str = working_directory
+    folder_for_idiff_files :str = working_directory + "idiff\\"
+    shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = working_directory + "shared\\"
+
 
     name_of_vm_which_has_idifference :str = "ST_fiwalk"
     user_of_vm_which_has_idifference :str = "fiwalk"
@@ -43,14 +46,14 @@ class Configuration:
     overwrite_existing_init_raw :bool = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = "sharepoint"
     vboxmanage_executable :str = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-    noise_recording_time_in_seconds:int = 300 #Recommended value for productive usage: 300
+    noise_recording_time_in_seconds:int = 300 #Recommended value: 300
     name_of_init_raw_file :str = "init.raw"
     name_of_noise_raw_file :str = name_of_noise_action + ".raw"
     clear_logfile_before_execution :bool = True
     delete_trace_image_after_analysis :bool = False
     use_gui_mode_for_vm :bool = True
     create_snapshots_after_action_execution :bool = True
-    name_of_snapshots_of_actions :str = "fdfe_snapshot"
+    prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot"
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)

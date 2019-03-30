@@ -7,9 +7,9 @@ def get_name():
     return "Merge evidences"
 
 def execute(configuration: Configuration):
-    if os.path.exists(configuration.current_folder + "\\me\\"):
-        shutil.rmtree(configuration.current_folder + "\\me\\")
-    os.makedirs(configuration.current_folder + "\\me\\")
+    if os.path.exists(configuration.working_directory + "me\\"):
+        shutil.rmtree(configuration.working_directory + "me\\")
+    os.makedirs(configuration.working_directory + "me\\")
     def write_content_merged(dictionary:str,output_me_file_with_full_path:str, label_for_operation:str):
         result = ""
         for key in dictionary:
@@ -67,14 +67,14 @@ def execute(configuration: Configuration):
         write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        merge_evidence_for_file([configuration.current_folder + "\\pe\\" + configuration.name_of_noise_action + ".pe"],configuration.current_folder + "\\me\\" + configuration.name_of_noise_action + ".me")
+        merge_evidence_for_file([configuration.working_directory + "pe\\" + configuration.name_of_noise_action + ".pe"],configuration.working_directory + "me\\" + configuration.name_of_noise_action + ".me")
         for action in configuration.actions:
             configuration.log.info("Start merge evidence for action " + action[1])
             try:
                 pe_files = []
                 for i in range(1, configuration.amount_of_executions_per_action + 1):
-                    pe_files.append(configuration.current_folder + "\\pe\\" + action[1] + "." + str(i) + ".pe")
-                merge_evidence_for_file(pe_files,configuration.current_folder + "\\me\\" + action[1] + ".me")
+                    pe_files.append(configuration.working_directory + "pe\\" + action[1] + "." + str(i) + ".pe")
+                merge_evidence_for_file(pe_files,configuration.working_directory + "me\\" + action[1] + ".me")
             except Exception as exception_argument:
                 configuration.log.error("Exception occurred while merge evidence  for action " + action[1] + ":")
                 configuration.log.error(exception_argument, exc_info=True)

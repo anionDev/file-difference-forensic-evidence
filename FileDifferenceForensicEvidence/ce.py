@@ -7,9 +7,9 @@ def get_name():
     return "Calculate characteristical evidences"
 
 def execute(configuration: Configuration):
-    if os.path.exists(configuration.current_folder + "\\ce\\"):
-        shutil.rmtree(configuration.current_folder + "\\ce\\")
-    os.makedirs(configuration.current_folder + "\\ce\\")
+    if os.path.exists(configuration.working_directory + "ce\\"):
+        shutil.rmtree(configuration.working_directory + "ce\\")
+    os.makedirs(configuration.working_directory + "ce\\")
     class Trace(object):
         def __init__(self, file, operation,amount_of_occurrence):
             self.file = file
@@ -53,11 +53,11 @@ def execute(configuration: Configuration):
         for action in configuration.actions:
             configuration.log.info("Start characteristic evidence for action " + action[1])
             try:
-                ignored_files = [configuration.current_folder + "\\me\\" + configuration.name_of_noise_action + ".me"]
+                ignored_files = [configuration.working_directory + "me\\" + configuration.name_of_noise_action + ".me"]
                 for ignore_action_name in configuration.actions:
                     if ignore_action_name[1] != action[1]:
-                        ignored_files.append(configuration.current_folder + "\\me\\" + ignore_action_name[1] + ".me")
-                characteristic_evidence_for_file(configuration.current_folder + "\\me\\" + action[1] + ".me",ignored_files,configuration.current_folder + "\\ce\\" + action[1] + ".ce")
+                        ignored_files.append(configuration.working_directory + "me\\" + ignore_action_name[1] + ".me")
+                characteristic_evidence_for_file(configuration.working_directory + "me\\" + action[1] + ".me",ignored_files,configuration.working_directory + "ce\\" + action[1] + ".ce")
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
                 configuration.log.error(exception_object, exc_info=True)
