@@ -22,7 +22,7 @@ def execute(configuration : Configuration):
                 return False
         def __hash__(self):
             return 0
-    def get_trace_from_me_file(me_file_with_full_path):
+    def get_trace_from_me_file(me_file_with_full_path:str):
         traces = set()
         with open(me_file_with_full_path) as fileStream:
             lines = fileStream.readlines()
@@ -31,7 +31,7 @@ def execute(configuration : Configuration):
                     splitted = re.split(r'\t+', line)
                     traces.add(Trace(splitted[0],splitted[1],int(splitted[2])))
         return traces
-    def characteristic_evidence_for_file(me_file_with_full_path,me_files_of_ignored_traced,result_ce_file_with_full_path):
+    def characteristic_evidence_for_file(me_file_with_full_path:str,me_files_of_ignored_traced,result_ce_file_with_full_path:str):
         if os.path.exists(result_ce_file_with_full_path and configuration.overwrite_existing_files_and_snapshots):
             os.remove(result_ce_file_with_full_path)
         trace_of_action = get_trace_from_me_file(me_file_with_full_path)

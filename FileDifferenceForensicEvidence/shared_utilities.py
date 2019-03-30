@@ -14,11 +14,12 @@ class Configuration:
     log_loglevel = logging.DEBUG
     log = logging.getLogger(project_name)
     amount_of_executions_per_action = 3
-    actions = [["Special:WaitUntilUserContinues:install program","installProgram",[]], 
-        ["Special:WaitUntilUserContinues:start without login to program","startWithoutLoginToProgram",[]],
-        ["Special:WaitUntilUserContinues:start with login to program","startWithLoginToProgram",[]],
-        ["Special:WaitUntilUserContinues:start with login to program and re-lock","startWithLoginToProgramAndReLock",[]],
-        ["Special:WaitUntilUserContinues:uninstall program","uninstallProgram",[]],]
+    actions = [["Special:WaitUntilUserContinues:install program","01_installProgram",[]], 
+        ["Special:WaitUntilUserContinues:start without login to program","02_startWithoutLoginToProgram",[]],
+        ["Special:WaitUntilUserContinues:start with login to program","03_startWithLoginToProgram",[]],
+        ["Special:WaitUntilUserContinues:start with login to program and re-lock","04_startWithLoginToProgramAndReLock",[]],
+        ["Special:WaitUntilUserContinues:uninstall program","05_uninstallProgram",[]],
+    ]
     name_of_noise_action :str = "noise"
     noise_action = ["Special:Noise:",name_of_noise_action,[]]
     name_of_noise_idiff_file :str = name_of_noise_action + ".idiff"

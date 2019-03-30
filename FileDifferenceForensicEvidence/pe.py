@@ -31,7 +31,7 @@ def execute(configuration : Configuration):
         except:
             pass
         return result
-    def prepare_evidence_for_file(idiff_file, pe_file):
+    def prepare_evidence_for_file(idiff_file:str, pe_file:str):
         result = list()
         with open(idiff_file) as file:
             idiff_file_lines = file.readlines()

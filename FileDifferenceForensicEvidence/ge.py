@@ -119,8 +119,8 @@ def execute(configuration: Configuration):
         shared_utilities.ensure_vm_which_has_idifference_has_shared_folder(configuration)
         shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
         generate_evidence(configuration.noise_action,0)
-        generate_idiff_files()
         generate_evidence_full()
+        generate_idiff_files()
     except Exception as exception:
         configuration.log.error("Exception occurred in ge.py:")
         configuration.log.error(exception, exc_info=True)
