@@ -59,15 +59,18 @@ def execute(configuration: Configuration):
             configuration.log.info("Start evidence generation for action " + action[1] + " in iteration " + str(iteration_number))
             try:
                 prepare_generate_evidence()
-                shared_utilities.continue_vm(configuration)
                 if (action[0].lower().startswith("Special:".lower())):
                     if(action[0].lower().startswith("Special:WaitUntilUserContinues:".lower())):
+                        input("Next action in the vm: " + action[1] + " ('" + action[0].split(":")[2] + "'). Please press enter to continue the vm and then execute the action.")
+                        shared_utilities.continue_vm(configuration)
                         input("Wait for execution of manual action " + action[1] + " ('" + action[0].split(":")[2] + "') in the vm. Please press enter if this action is finished to continue generating evidences.")
                     elif action[0].lower().startswith("Special:Noise:".lower()):
                         time.sleep(configuration.noise_recording_time_in_seconds)
+                        shared_utilities.continue_vm(configuration)
                     else:
                         raise Exception("Unknown action") 
                 else:
+                    shared_utilities.continue_vm(configuration)
                     shared_utilities.execute_action_in_vm(action, configuration)
                 shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse, configuration)
                 if(configuration.create_snapshots_after_action_execution):
