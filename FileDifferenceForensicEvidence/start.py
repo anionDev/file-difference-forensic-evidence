@@ -9,7 +9,7 @@ import os
 import subprocess
 import sys
 
-def calculate_evidences(configuration : Configuration):
+def calculate_evidences(configuration: Configuration):
     if configuration.clear_logfile_before_execution and os.path.isfile(configuration.log_file):
         open(configuration.log_file, 'w').close()
     logging.basicConfig(format=configuration.log_format,

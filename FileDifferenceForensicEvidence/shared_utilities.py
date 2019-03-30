@@ -14,8 +14,11 @@ class Configuration:
     log_loglevel = logging.DEBUG
     log = logging.getLogger(project_name)
     amount_of_executions_per_action = 3
-    actions = [["Special:WaitUntilUserContinues:install program","action1",[]], 
-        ["Special:WaitUntilUserContinues:uninstall program","action2",[]],]
+    actions = [["Special:WaitUntilUserContinues:install program","installProgram",[]], 
+        ["Special:WaitUntilUserContinues:start without login to program","startWithoutLoginToProgram",[]],
+        ["Special:WaitUntilUserContinues:start with login to program","startWithLoginToProgram",[]],
+        ["Special:WaitUntilUserContinues:start with login to program and re-lock","startWithLoginToProgramAndReLock",[]],
+        ["Special:WaitUntilUserContinues:uninstall program","uninstallProgram",[]],]
     name_of_noise_action :str = "noise"
     noise_action = ["Special:Noise:",name_of_noise_action,[]]
     name_of_noise_idiff_file :str = name_of_noise_action + ".idiff"
@@ -134,6 +137,6 @@ def snapshot_exists(configuration:Configuration, name_of_vm: str, name_of_snapsh
 def delete_snapshot(configuration:Configuration,name_of_vm: str, name_of_snapshot: str):
     start_program(configuration, configuration.vboxmanage_executable,"snapshot " + name_of_vm + " delete " + name_of_snapshot, 5)
 
-def get_hdd_uuid(configuration: Configuration, vm_name):
+def get_hdd_uuid(configuration: Configuration, vm_name:str):
         output = subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()
         return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(output).group(1)

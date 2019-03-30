@@ -10,7 +10,7 @@ def execute(configuration : Configuration):
     if os.path.exists(configuration.current_folder + "\\pe\\"):
         shutil.rmtree(configuration.current_folder + "\\pe\\")
     os.makedirs(configuration.current_folder + "\\pe\\")
-    def get_pe_line(line_splitted_at_tab,operation):
+    def get_pe_line(line_splitted_at_tab,operation:str):
         result = list()
         try:
             if operation == "cr":
