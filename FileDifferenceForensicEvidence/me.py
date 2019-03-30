@@ -6,7 +6,7 @@ import re
 def get_name():
     return "Merge evidences"
 
-def execute(configuration : Configuration):
+def execute(configuration: Configuration):
     if os.path.exists(configuration.current_folder + "\\me\\"):
         shutil.rmtree(configuration.current_folder + "\\me\\")
     os.makedirs(configuration.current_folder + "\\me\\")

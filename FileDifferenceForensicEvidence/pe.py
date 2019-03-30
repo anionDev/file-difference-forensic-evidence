@@ -6,7 +6,7 @@ from shared_utilities import Configuration
 def get_name():
     return "Prepare evidences"
 
-def execute(configuration : Configuration):
+def execute(configuration: Configuration):
     if os.path.exists(configuration.current_folder + "\\pe\\"):
         shutil.rmtree(configuration.current_folder + "\\pe\\")
     os.makedirs(configuration.current_folder + "\\pe\\")

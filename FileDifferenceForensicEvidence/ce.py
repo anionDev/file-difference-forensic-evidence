@@ -6,7 +6,7 @@ import shutil
 def get_name():
     return "Calculate characteristical evidences"
 
-def execute(configuration : Configuration):
+def execute(configuration: Configuration):
     if os.path.exists(configuration.current_folder + "\\ce\\"):
         shutil.rmtree(configuration.current_folder + "\\ce\\")
     os.makedirs(configuration.current_folder + "\\ce\\")

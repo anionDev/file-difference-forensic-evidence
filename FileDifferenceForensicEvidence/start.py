@@ -17,7 +17,7 @@ def calculate_evidences(configuration: Configuration):
                         level=configuration.log_loglevel,
                         handlers=[
                             logging.FileHandler(configuration.log_file),
-                            logging.StreamHandler()
+                            logging.StreamHandler(),
                         ]
                        )
     executionSteps = [
