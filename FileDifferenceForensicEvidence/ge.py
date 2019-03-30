@@ -68,7 +68,6 @@ def execute(configuration: Configuration):
                     elif action[0].lower().startswith("Special:Noise:".lower()):
                         shared_utilities.continue_vm(configuration)
                         time.sleep(configuration.noise_recording_time_in_seconds)
-                        pass
                     else:
                         raise Exception("Unknown action") 
                 else:
