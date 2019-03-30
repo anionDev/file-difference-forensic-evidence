@@ -65,8 +65,9 @@ def execute(configuration: Configuration):
                         shared_utilities.continue_vm(configuration)
                         input("Wait for execution of manual action " + action[1] + " ('" + action[0].split(":")[2] + "') in the vm. Please press enter if this action is finished to continue generating evidences.")
                     elif action[0].lower().startswith("Special:Noise:".lower()):
-                        time.sleep(configuration.noise_recording_time_in_seconds)
                         shared_utilities.continue_vm(configuration)
+                        time.sleep(configuration.noise_recording_time_in_seconds)
+                        pass
                     else:
                         raise Exception("Unknown action") 
                 else:
