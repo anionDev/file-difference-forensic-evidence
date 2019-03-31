@@ -6,7 +6,8 @@ import re
 
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
+    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
+                                                               #directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -19,13 +20,11 @@ class Configuration:
     snapshot_name_for_initial_state_of_vm_to_analyse :str = "initial"
 
     amount_of_executions_per_action = 3
-    actions = [
-        ["Special:WaitUntilUserContinues:install program","01_InstallProgram",[],snapshot_name_for_initial_state_of_vm_to_analyse], 
+    actions = [["Special:WaitUntilUserContinues:install program","01_InstallProgram",[],snapshot_name_for_initial_state_of_vm_to_analyse], 
         ["Special:WaitUntilUserContinues:start program","02_StartProgram",[],"prepared_01_after_action1_program_installed"],
         ["Special:WaitUntilUserContinues:login to program","03_LoginToProgram",[],"prepared_02_after_action2_program_started"],
         ["Special:WaitUntilUserContinues:lock program","04_LockProgram",[],"prepared_03_after_action3_logged_in"],
-        ["Special:WaitUntilUserContinues:uninstall program","05_UninstallProgram",[],"prepared_04_after_action3_logged_in_and_closed_program"],
-    ]
+        ["Special:WaitUntilUserContinues:uninstall program","05_UninstallProgram",[],"prepared_04_after_action3_logged_in_and_closed_program"],]
 
     name_of_noise_action :str = "noise"
     noise_action = ["Special:Noise:", name_of_noise_action,[], snapshot_name_for_initial_state_of_vm_to_analyse]
@@ -46,12 +45,11 @@ class Configuration:
     overwrite_existing_init_raw :bool = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = "sharepoint"
     vboxmanage_executable :str = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-    noise_recording_time_in_seconds:int = 300 #Recommended value: 300
+    noise_recording_time_in_seconds :int = 300 #Recommended value: 300
     name_of_init_raw_file :str = "init.raw"
     name_of_noise_raw_file :str = name_of_noise_action + ".raw"
     clear_logfile_before_execution :bool = True
     delete_trace_image_after_analysis :bool = False
-    use_gui_mode_for_vm :bool = True
     create_snapshots_after_action_execution :bool = True
     prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot"
 
@@ -102,9 +100,9 @@ def execute_program_in_vm(configuration:Configuration,name_of_vm: str,executable
        argument = ""
     start_program(configuration, configuration.vboxmanage_executable, "guestcontrol " + name_of_vm + " run --exe " + executable_file_with_path + " --username " + username + " --password " + password + argument,waiting_time_in_seconds_after_execution)
 
-def ensure_vm_is_running(name_of_vm: str, configuration: Configuration):
+def ensure_vm_is_running(name_of_vm: str, configuration: Configuration, use_gui=True):
     if get_vm_state(configuration, name_of_vm) != "running":
-        if configuration.use_gui_mode_for_vm:
+        if use_gui:
             gui_argument = "gui"
         else:
             gui_argument = "headless"
@@ -118,8 +116,8 @@ def ensure_vm_is_in_save_state(name_of_vm: str, configuration:Configuration):
     if get_vm_state(configuration, name_of_vm) == "running":
         start_program(configuration,configuration.vboxmanage_executable,"controlvm " + name_of_vm + " savestate", 5)
 
-def continue_vm(configuration:Configuration):
-    ensure_vm_is_running(configuration.name_of_vm_to_analyse, configuration)
+def continue_vm(configuration:Configuration, use_gui=True):
+    ensure_vm_is_running(configuration.name_of_vm_to_analyse, configuration, use_gui)
 
 def execute_action_in_vm(action,configuration:Configuration):
     execute_program_in_vm(configuration, configuration.name_of_vm_to_analyse, action[0], configuration.user_of_vm_to_analyse, configuration.password_of_vm_to_analyse, 5, action[2])

@@ -34,7 +34,7 @@ def execute(configuration: Configuration):
         shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + snapshot_name, 5, "Restore original state of vm")
 
     def execute_idifference_for_action(action,iteration_number):
-        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration)
+        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration, False)
         execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + configuration.name_of_init_raw_file,"/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
 
     def execute_idifference(raw_file_1:str,raw_file_2:str,result_file:str):
@@ -60,16 +60,16 @@ def execute(configuration: Configuration):
                 if (action[0].lower().startswith("Special:".lower())):
                     if(action[0].lower().startswith("Special:WaitUntilUserContinues:".lower())):
                         input("Next action in the vm: " + action[1] + " ('" + action[0].split(":")[2] + "'). Please press enter to continue the vm and then execute the action.")
-                        shared_utilities.continue_vm(configuration)
+                        shared_utilities.continue_vm(configuration, True)
                         input("Wait for execution of manual action " + action[1] + " ('" + action[0].split(":")[2] + "') in the vm. Please press enter if this action is finished to continue generating evidences.")
                     elif action[0].lower().startswith("Special:Noise:".lower()):
                         configuration.log.info("Recording noise... (Waiting " + str(configuration.noise_recording_time_in_seconds) + " seconds)")
-                        shared_utilities.continue_vm(configuration)
+                        shared_utilities.continue_vm(configuratio, False)
                         time.sleep(configuration.noise_recording_time_in_seconds)
                     else:
                         raise Exception("Unknown action")
                 else:
-                    shared_utilities.continue_vm(configuration)
+                    shared_utilities.continue_vm(configuration, False)
                     shared_utilities.execute_action_in_vm(action, configuration)
                 shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse, configuration)
                 if(configuration.create_snapshots_after_action_execution):
