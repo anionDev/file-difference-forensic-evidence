@@ -78,7 +78,6 @@ def execute(configuration: Configuration):
                         shared_utilities.ensure_snapshot_does_not_exist(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
                     shared_utilities.create_snapshot(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
                 create_trace_image(action,iteration_number,result_file_name)
-                restore_snapshot()
                 executed_actions.append([action,iteration_number])
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while generating evidence  for action " + action[1] + " in iteration " + str(iteration_number) + ":")
