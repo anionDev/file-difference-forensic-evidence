@@ -58,7 +58,7 @@ class Configuration:
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)
 
-def start_program(configuration: Configuration, executable_with_full_path: str, argument: str, waiting_time_in_seconds_after_execution:int=1, title=""):
+def start_program(configuration: Configuration, executable_with_full_path: str, argument: str, waiting_time_in_seconds_after_execution:int=0, title=""):
     if(not title == ""):
         configuration.log.info(title + ":")
     configuration.log.debug("Start " + executable_with_full_path + " " + argument)

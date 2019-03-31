@@ -94,7 +94,7 @@ def execute(configuration: Configuration):
 
     def generate_new_init_raw_file():
         restore_snapshot(configuration.snapshot_name_for_initial_state_of_vm_to_analyse)
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file, "Clone medium (Create raw-file of initial state)")
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
         if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
             os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
         shutil.copy(init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)

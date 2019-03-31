@@ -10,6 +10,8 @@ import subprocess
 import sys
 
 def calculate_evidences(configuration: Configuration):
+    if not os.path.exists(configuration.working_directory):
+        os.makedirs(configuration.working_directory)
     if configuration.clear_logfile_before_execution and os.path.isfile(configuration.log_file):
         open(configuration.log_file, 'w').close()
     logging.basicConfig(format=configuration.log_format,
