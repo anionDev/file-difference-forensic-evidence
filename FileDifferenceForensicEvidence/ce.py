@@ -54,7 +54,7 @@ def execute(configuration: Configuration):
         for action in configuration.actions:
             configuration.log.info("Start characteristic evidence for action " + action.id)
             try:
-                ignored_files = [configuration.working_directory + "me\\" + configuration.TODO_name_of_noise_action + ".me"]
+                ignored_files = [configuration.working_directory + "me\\" + action.noise_action.name + ".me"]
                 for ignore_action_name in configuration.actions:
                     if ignore_action_name[1] != action.id:
                         ignored_files.append(configuration.working_directory + "me\\" + ignore_action_name[1] + ".me")

@@ -68,8 +68,8 @@ def execute(configuration: Configuration):
         write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        merge_evidence_for_file([configuration.working_directory + "pe\\" + configuration.TODO_name_of_noise_action + ".pe"],configuration.working_directory + "me\\" + configuration.TODO_name_of_noise_action + ".me")
         for action in configuration.actions:
+            merge_evidence_for_file([configuration.working_directory + "pe\\" + action.noise_action.name + ".pe"],configuration.working_directory + "me\\" + action.noise_action.name + ".me")
             configuration.log.info("Start merge evidence for action " + action.id)
             try:
                 pe_files = []
