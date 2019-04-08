@@ -14,8 +14,6 @@ def execute(configuration: Configuration):
     if os.path.exists(configuration.folder_for_idiff_files):
         shutil.rmtree(configuration.folder_for_idiff_files)
     os.makedirs(configuration.folder_for_idiff_files)
-    init_raw_file = configuration.path_of_init_raw + configuration.TODO_name_of_init_raw_file
-    init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + configuration.TODO_name_of_init_raw_file
     executed_actions = []
     if not os.path.exists(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference):
         os.makedirs(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
@@ -36,7 +34,7 @@ def execute(configuration: Configuration):
 
     def execute_idifference_for_action(action:Action,iteration_number:int):
         shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration, False)
-        execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + configuration.TODO_name_of_init_raw_file,"/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
+        execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.init_raw_file,"/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
 
     def execute_idifference(raw_file_1:str,raw_file_2:str,result_file:str):
         idifference2_command = "\"" + configuration.vboxmanage_executable + "\" " + "guestcontrol " + configuration.name_of_vm_which_has_idifference + " run --exe " + configuration.path_of_python3_in_vm_which_has_idifference + " --username " + configuration.user_of_vm_which_has_idifference + " --password " + configuration.password_of_which_has_idifference + " --putenv PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --wait-stdout --wait-stderr -- arg " + configuration.path_of_difference_in_vm_which_has_idifference + " " + raw_file_1 + " " + raw_file_2
@@ -89,31 +87,32 @@ def execute(configuration: Configuration):
 
     def generate_evidence_full():
         for action in configuration.actions:
-            generate_evidence(["Special:Noise:", action.id + "_noise",[] , action.name_of_based_snapshot],0)
+            generate_new_init_raw_file_if_desired(action)
             for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
                 generate_evidence(action, iteration_number)
 
-    def generate_new_init_raw_file():
-        restore_snapshot(configuration.snapshot_name_for_initial_state_of_vm_to_analyse)
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
+    def generate_new_init_raw_file(action):
+        restore_snapshot(action.name_of_based_snapshot)
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + action.init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
+        init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
         if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
             os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
-        shutil.copy(init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+        shutil.copy(action.init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
-    def generate_new_init_raw_file_if_desired():
+    def generate_new_init_raw_file_if_desired(action:Action):
         if configuration.generate_init_raw:
-            if(os.path.isfile(init_raw_file)):
+            if(os.path.isfile(action.init_raw_file)):
                 if(configuration.overwrite_existing_init_raw):
-                    os.remove(init_raw_file)
-                    generate_new_init_raw_file()
+                    os.remove(action.init_raw_file)
+                    generate_new_init_raw_file(action)
             else:
-                generate_new_init_raw_file()
+                generate_new_init_raw_file(action)
+        generate_evidence(action.noise_action)
     def generate_idiff_files():
         for executed_action in executed_actions:
             execute_idifference_for_action(executed_action.name, executed_action.id)
             delete_trace_image_if_desired(executed_action.name, executed_action.id)
     try:
-        generate_new_init_raw_file_if_desired()
         shared_utilities.ensure_vm_which_has_idifference_has_shared_folder(configuration)
         shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference, configuration)
         generate_evidence_full()

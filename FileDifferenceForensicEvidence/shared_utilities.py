@@ -9,18 +9,23 @@ class Action:
     id :str
     argument :str
     name_of_based_snapshot :str
-    is_noise_action :Action
+    name_of_init_raw_file :str
+    init_raw_file :str
+    is_noise_action :bool
     noise_action :Action
-    def __init__(self, name:str, id:str,argument, name_of_based_snapshot:str, is_noise_action:bool):
+    def __init__(self, name:str, id:str,argument:str, name_of_based_snapshot:str, is_noise_action:bool, working_directory:str):
         self.name = name
+        self.init_raw_file = init_raw_file
         self.id = id
         self.argument = argument
         self.name_of_based_snapshot = name_of_based_snapshot
+        self.name_of_init_raw_file=self.id + ".raw"
+        self.init_raw_file = working_directory +   self.name_of_init_raw_file
         self.is_noise_action = is_noise_action
         if(self.is_noise_action):
             self.noise_action = None
         else:
-            self.noise_action = Action(self.name + "_noise", self.id + "_noise", [], self.name_of_based_snapshot, True)
+            self.noise_action = Action(self.name + "_noise", self.id + "_noise", [], self.name_of_based_snapshot, True, working_directory)
 
 class Configuration:
     project_name = "fdfe"
@@ -38,11 +43,11 @@ class Configuration:
 
     amount_of_executions_per_action = 3
     actions = [
-        Action("Special:WaitUntilUserContinues:install program", "01_InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False), 
-        Action("Special:WaitUntilUserContinues:start program", "02_StartProgram", [], "prepared_01_after_action1_program_installed", False),
-        Action("Special:WaitUntilUserContinues:login to program", "03_LoginToProgram", [], "prepared_02_after_action2_program_started", False),
-        Action("Special:WaitUntilUserContinues:lock program", "04_LockProgram", [], "prepared_03_after_action3_logged_in", False),
-        Action("Special:WaitUntilUserContinues:uninstall program", "05_UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False),
+        Action("Special:WaitUntilUserContinues:install program", "01_InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
+        Action("Special:WaitUntilUserContinues:start program", "02_StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
+        Action("Special:WaitUntilUserContinues:login to program", "03_LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
+        Action("Special:WaitUntilUserContinues:lock program", "04_LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
+        Action("Special:WaitUntilUserContinues:uninstall program", "05_UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory),
     ]
     
     path_of_init_raw :str = working_directory
