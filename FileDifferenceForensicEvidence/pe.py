@@ -2,6 +2,7 @@ import os
 import re
 import shutil
 from shared_utilities import Configuration
+from shared_utilities import Action
 
 def get_name():
     return "Prepare evidences"
@@ -57,16 +58,16 @@ def execute(configuration: Configuration):
                 file.write("%s\n" % line)
 
     def prepare_evidence():
-        prepare_evidence_for_file(configuration.working_directory + "idiff\\" + configuration.name_of_noise_idiff_file,configuration.working_directory + "pe\\" + configuration.name_of_noise_action + ".pe")
+        prepare_evidence_for_file(configuration.working_directory + "idiff\\" + configuration.TODO_name_of_noise_idiff_file,configuration.working_directory + "pe\\" + configuration.TODO_name_of_noise_action + ".pe")
         for action in configuration.actions:
             for execution_number in range(1, configuration.amount_of_executions_per_action + 1):
-                configuration.log.info("Start prepare evidence for action " + action[1] + " in iteration " + str(execution_number))
+                configuration.log.info("Start prepare evidence for action " + action.id + " in iteration " + str(execution_number))
                 try:
-                    prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action[1] + "." + str(execution_number) + ".idiff",configuration.working_directory + "pe\\" + action[1] + "." + str(execution_number) + ".pe")
+                    prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action.id + "." + str(execution_number) + ".idiff",configuration.working_directory + "pe\\" + action.id + "." + str(execution_number) + ".pe")
                 except Exception as exception_object:
-                    configuration.log.error("Exception occurred while prepare evidence  for action " + action[1] + " in iteration " + str(execution_number) + ":")
+                    configuration.log.error("Exception occurred while prepare evidence  for action " + action.id + " in iteration " + str(execution_number) + ":")
                     configuration.log.error(exception_object, exc_info=True)
-                configuration.log.info("Prepare evidence for action " + action[1] + " in iteration " + str(execution_number) + " finished")
+                configuration.log.info("Prepare evidence for action " + action.id + " in iteration " + str(execution_number) + " finished")
 
     try:
         prepare_evidence()

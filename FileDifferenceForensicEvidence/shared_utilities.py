@@ -4,10 +4,27 @@ import subprocess
 import time
 import re
 
+class Action:
+    name :str
+    id :str
+    argument :str
+    name_of_based_snapshot :str
+    is_noise_action :Action
+    noise_action :Action
+    def __init__(self, name:str, id:str,argument, name_of_based_snapshot:str, is_noise_action:bool):
+        self.name = name
+        self.id = id
+        self.argument = argument
+        self.name_of_based_snapshot = name_of_based_snapshot
+        self.is_noise_action = is_noise_action
+        if(self.is_noise_action):
+            self.noise_action = None
+        else:
+            self.noise_action = Action(self.name + "_noise", self.id + "_noise", [], self.name_of_based_snapshot, True)
+
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
-                                                               #directory
+    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -20,15 +37,14 @@ class Configuration:
     snapshot_name_for_initial_state_of_vm_to_analyse :str = "initial"
 
     amount_of_executions_per_action = 3
-    actions = [["Special:WaitUntilUserContinues:install program","01_InstallProgram",[],snapshot_name_for_initial_state_of_vm_to_analyse], 
-        ["Special:WaitUntilUserContinues:start program","02_StartProgram",[],"prepared_01_after_action1_program_installed"],
-        ["Special:WaitUntilUserContinues:login to program","03_LoginToProgram",[],"prepared_02_after_action2_program_started"],
-        ["Special:WaitUntilUserContinues:lock program","04_LockProgram",[],"prepared_03_after_action3_logged_in"],
-        ["Special:WaitUntilUserContinues:uninstall program","05_UninstallProgram",[],"prepared_04_after_action3_logged_in_and_closed_program"],]
-
-    name_of_noise_action :str = "noise"
-    noise_action = ["Special:Noise:", name_of_noise_action,[], snapshot_name_for_initial_state_of_vm_to_analyse]
-    name_of_noise_idiff_file :str = name_of_noise_action + ".idiff"
+    actions = [
+        Action("Special:WaitUntilUserContinues:install program", "01_InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False), 
+        Action("Special:WaitUntilUserContinues:start program", "02_StartProgram", [], "prepared_01_after_action1_program_installed", False),
+        Action("Special:WaitUntilUserContinues:login to program", "03_LoginToProgram", [], "prepared_02_after_action2_program_started", False),
+        Action("Special:WaitUntilUserContinues:lock program", "04_LockProgram", [], "prepared_03_after_action3_logged_in", False),
+        Action("Special:WaitUntilUserContinues:uninstall program", "05_UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False),
+    ]
+    
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
     shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = working_directory + "shared\\"
@@ -45,9 +61,7 @@ class Configuration:
     overwrite_existing_init_raw :bool = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = "sharepoint"
     vboxmanage_executable :str = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-    noise_recording_time_in_seconds :int = 300 #Recommended value: 300
-    name_of_init_raw_file :str = "init.raw"
-    name_of_noise_raw_file :str = name_of_noise_action + ".raw"
+    noise_recording_time_in_seconds : int = 300 #Recommended value: 300
     clear_logfile_before_execution :bool = True
     delete_trace_image_after_analysis :bool = False
     create_snapshots_after_action_execution :bool = True
@@ -120,7 +134,7 @@ def continue_vm(configuration:Configuration, use_gui=True):
     ensure_vm_is_running(configuration.name_of_vm_to_analyse, configuration, use_gui)
 
 def execute_action_in_vm(action,configuration:Configuration):
-    execute_program_in_vm(configuration, configuration.name_of_vm_to_analyse, action[0], configuration.user_of_vm_to_analyse, configuration.password_of_vm_to_analyse, 5, action[2])
+    execute_program_in_vm(configuration, configuration.name_of_vm_to_analyse, action.name, configuration.user_of_vm_to_analyse, configuration.password_of_vm_to_analyse, 5, action.argument)
 
 def save_state_of_vm(name_of_vm: str,configuration: Configuration):
     ensure_vm_is_in_save_state(name_of_vm,configuration)

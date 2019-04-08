@@ -1,5 +1,6 @@
 import os
 from shared_utilities import Configuration
+from shared_utilities import Action
 import re
 import shutil
 
@@ -51,17 +52,17 @@ def execute(configuration: Configuration):
             file.write("\n".join(characteristic_traces_lines))
     def characteristic_evidence():
         for action in configuration.actions:
-            configuration.log.info("Start characteristic evidence for action " + action[1])
+            configuration.log.info("Start characteristic evidence for action " + action.id)
             try:
-                ignored_files = [configuration.working_directory + "me\\" + configuration.name_of_noise_action + ".me"]
+                ignored_files = [configuration.working_directory + "me\\" + configuration.TODO_name_of_noise_action + ".me"]
                 for ignore_action_name in configuration.actions:
-                    if ignore_action_name[1] != action[1]:
+                    if ignore_action_name[1] != action.id:
                         ignored_files.append(configuration.working_directory + "me\\" + ignore_action_name[1] + ".me")
-                characteristic_evidence_for_file(configuration.working_directory + "me\\" + action[1] + ".me",ignored_files,configuration.working_directory + "ce\\" + action[1] + ".ce")
+                characteristic_evidence_for_file(configuration.working_directory + "me\\" + action.id + ".me",ignored_files,configuration.working_directory + "ce\\" + action.id + ".ce")
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
                 configuration.log.error(exception_object, exc_info=True)
-            configuration.log.info("Characteristic evidence for action " + action[1] + " finished")
+            configuration.log.info("Characteristic evidence for action " + action.id + " finished")
 
     try:
         characteristic_evidence()
