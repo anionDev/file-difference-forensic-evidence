@@ -47,9 +47,6 @@ def execute(configuration: Configuration):
         if(delete_trace_image_after_analysis):
             os.remove(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
-    def finalize_generate_evidence():
-        shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
-
     def generate_evidence(action:Action,iteration_number:int):
         result_file_name = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw"
         if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(result_file_name)):
@@ -82,7 +79,7 @@ def execute(configuration: Configuration):
                 configuration.log.error("Exception occurred while generating evidence  for action " + action.id + " in iteration " + str(iteration_number) + ":")
                 configuration.log.error(exception_object, exc_info=True)
             finally:
-                finalize_generate_evidence()
+                shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
             configuration.log.info("Evidence generation for action " + action.id + " in iteration " + str(iteration_number) + " finished")
 
     def generate_evidence_full():
@@ -100,7 +97,7 @@ def execute(configuration: Configuration):
                     generate_new_init_raw_file(action)
             else:
                 generate_new_init_raw_file(action)
-        generate_evidence(action.noise_action)
+        generate_evidence(action.noise_action,0)
 
     def generate_new_init_raw_file(action:Action):
         restore_snapshot(action.name_of_based_snapshot)
@@ -122,6 +119,7 @@ def execute(configuration: Configuration):
     except Exception as exception:
         configuration.log.error("Exception occurred in ge.py:")
         configuration.log.error(exception, exc_info=True)
+        raise
     finally:
         shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference, configuration)
         shared_utilities.remove_shared_folder_from_vm_which_has_idifference(configuration)

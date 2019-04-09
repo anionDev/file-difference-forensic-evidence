@@ -86,3 +86,4 @@ def execute(configuration: Configuration):
     except Exception as exception:
         configuration.log.error("Exception occurred in me.py:")
         configuration.log.error(exception, exc_info=True)
+        raise

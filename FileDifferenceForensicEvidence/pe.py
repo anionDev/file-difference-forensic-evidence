@@ -59,7 +59,7 @@ def execute(configuration: Configuration):
 
     def prepare_evidence():
         for action in configuration.actions:
-            prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action.noise_action.name + ".idiff",configuration.working_directory + "pe\\" + action.noise_action.name + + ".pe")
+            prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action.noise_action.name + ".idiff",configuration.working_directory + "pe\\" + action.noise_action.name + ".pe")
             for execution_number in range(1, configuration.amount_of_executions_per_action + 1):
                 configuration.log.info("Start prepare evidence for action " + action.id + " in iteration " + str(execution_number))
                 try:
@@ -74,3 +74,4 @@ def execute(configuration: Configuration):
     except Exception as exception:
         configuration.log.error("Exception occurred in pe.py:")
         configuration.log.error(exception, exc_info=True)
+        raise

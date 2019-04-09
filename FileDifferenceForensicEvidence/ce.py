@@ -56,8 +56,8 @@ def execute(configuration: Configuration):
             try:
                 ignored_files = [configuration.working_directory + "me\\" + action.noise_action.name + ".me"]
                 for ignore_action_name in configuration.actions:
-                    if ignore_action_name[1] != action.id:
-                        ignored_files.append(configuration.working_directory + "me\\" + ignore_action_name[1] + ".me")
+                    if ignore_action_name.id != action.id:
+                        ignored_files.append(configuration.working_directory + "me\\" + ignore_action_name.id + ".me")
                 characteristic_evidence_for_file(configuration.working_directory + "me\\" + action.id + ".me",ignored_files,configuration.working_directory + "ce\\" + action.id + ".ce")
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
@@ -69,3 +69,4 @@ def execute(configuration: Configuration):
     except Exception as exception:
         configuration.log.error("Exception occurred in ce.py:")
         configuration.log.error(exception, exc_info=True)
+        raise
