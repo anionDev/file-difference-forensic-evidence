@@ -9,8 +9,10 @@ import logging
 import os
 import subprocess
 import sys
+import ctypes
 
 def calculate_evidences(configuration: Configuration):
+    ctypes.windll.kernel32.SetConsoleTitleW("FileDifferenceForensicEvidence: " + configuration.project_name + " (" + configuration.working_directory + ")")
     if not os.path.exists(configuration.working_directory):
         os.makedirs(configuration.working_directory)
     if configuration.clear_logfile_before_execution and os.path.isfile(configuration.log_file):
@@ -18,17 +20,9 @@ def calculate_evidences(configuration: Configuration):
     logging.basicConfig(format=configuration.log_format,
                         datefmt=configuration.log_dateformat,
                         level=configuration.log_loglevel,
-                        handlers=[
-                            logging.FileHandler(configuration.log_file),
-                            logging.StreamHandler(),
-                        ]
-                       )
-    executionSteps = [
-        ge,
-        pe,
-        me,
-        ce,
-    ]
+                        handlers=[logging.FileHandler(configuration.log_file),
+                            logging.StreamHandler(),])
+    executionSteps = [ge, pe, me, ce,]
     configuration.log.info("Started")
     for execution_step in executionSteps:
         configuration.log.info("------------------------------------------------------------")

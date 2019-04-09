@@ -4,32 +4,24 @@ import subprocess
 import time
 import re
 
-class Action:
-    name :str
-    id :str
-    argument :str
-    name_of_based_snapshot :str
-    name_of_init_raw_file :str
-    init_raw_file :str
-    is_noise_action :bool
-    noise_action :Action
+class Action(object):
     def __init__(self, name:str, id:str,argument:str, name_of_based_snapshot:str, is_noise_action:bool, working_directory:str):
         self.name = name
-        self.init_raw_file = init_raw_file
-        self.id = id
+        Action._action_counter = Action._action_counter + 1
+        self.id = "action_" + str(Action._action_counter)+"."+id
         self.argument = argument
         self.name_of_based_snapshot = name_of_based_snapshot
-        self.name_of_init_raw_file=self.id + ".raw"
-        self.init_raw_file = working_directory +   self.name_of_init_raw_file
+        self.name_of_init_raw_file = self.id + ".init.raw"
+        self.init_raw_file = working_directory + self.name_of_init_raw_file
         self.is_noise_action = is_noise_action
-        if(self.is_noise_action):
-            self.noise_action = None
-        else:
-            self.noise_action = Action(self.name + "_noise", self.id + "_noise", [], self.name_of_based_snapshot, True, working_directory)
-
+        if(not self.is_noise_action):
+            self.noise_action = Action(self.name + ".noise", self.id + ".noise", [], self.name_of_based_snapshot, True, working_directory)
+Action.noise_action :Action = None
+Action._action_counter :int = 0
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
+    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
+                                                               #directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -41,13 +33,14 @@ class Configuration:
     password_of_vm_to_analyse :str = ""
     snapshot_name_for_initial_state_of_vm_to_analyse :str = "initial"
 
-    amount_of_executions_per_action = 3
+    amount_of_executions_per_action : int = 3 #Recommended value: 3
+    noise_recording_time_in_seconds : int = 300 #Recommended value: 300
     actions = [
-        Action("Special:WaitUntilUserContinues:install program", "01_InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
-        Action("Special:WaitUntilUserContinues:start program", "02_StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
-        Action("Special:WaitUntilUserContinues:login to program", "03_LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
-        Action("Special:WaitUntilUserContinues:lock program", "04_LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
-        Action("Special:WaitUntilUserContinues:uninstall program", "05_UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory),
+        Action("Special:WaitUntilUserContinues:install program", "InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
+        Action("Special:WaitUntilUserContinues:start program", "StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
+        Action("Special:WaitUntilUserContinues:login to program", "LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
+        Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
+        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory),
     ]
     
     path_of_init_raw :str = working_directory
@@ -66,11 +59,10 @@ class Configuration:
     overwrite_existing_init_raw :bool = False
     name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = "sharepoint"
     vboxmanage_executable :str = "C:/Program Files/Oracle/VirtualBox/VBoxManage.exe"
-    noise_recording_time_in_seconds : int = 300 #Recommended value: 300
     clear_logfile_before_execution :bool = True
     delete_trace_image_after_analysis :bool = False
     create_snapshots_after_action_execution :bool = True
-    prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot"
+    prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot."
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)

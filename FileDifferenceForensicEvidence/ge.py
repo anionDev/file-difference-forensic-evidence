@@ -72,7 +72,7 @@ def execute(configuration: Configuration):
                     shared_utilities.execute_action_in_vm(action, configuration)
                 shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse, configuration)
                 if(configuration.create_snapshots_after_action_execution):
-                    snapshot_name = configuration.prefix_of_snapshotnames_of_actions + "_" + action.id + "_" + str(iteration_number)
+                    snapshot_name = configuration.prefix_of_snapshotnames_of_actions + action.id + "." + str(iteration_number)
                     if (configuration.overwrite_existing_files_and_snapshots):
                         shared_utilities.ensure_snapshot_does_not_exist(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
                     shared_utilities.create_snapshot(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
@@ -91,13 +91,6 @@ def execute(configuration: Configuration):
             for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
                 generate_evidence(action, iteration_number)
 
-    def generate_new_init_raw_file(action):
-        restore_snapshot(action.name_of_based_snapshot)
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + action.init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
-        init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
-        if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
-            os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
-        shutil.copy(action.init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     def generate_new_init_raw_file_if_desired(action:Action):
         if configuration.generate_init_raw:
@@ -108,6 +101,15 @@ def execute(configuration: Configuration):
             else:
                 generate_new_init_raw_file(action)
         generate_evidence(action.noise_action)
+
+    def generate_new_init_raw_file(action:Action):
+        restore_snapshot(action.name_of_based_snapshot)
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + action.init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
+        init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
+        if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
+            os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+        shutil.copy(action.init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+
     def generate_idiff_files():
         for executed_action in executed_actions:
             execute_idifference_for_action(executed_action.name, executed_action.id)
