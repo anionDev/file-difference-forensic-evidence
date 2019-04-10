@@ -19,9 +19,12 @@ To execute this script correctly you need:
 
 ## Usage
 
+Warning: The scripts in this repository have no stable-state!
+
 1. Prepare the vm which contains the os where you want to execute the program/action. This vm is called vm_to_analyse. vm_to_analyse should be suspended initially.
 2. Prepare the vm which contains idifference2. This vm is called vm_which_has_idifference. vm_which_has_idifference should be shut down initially.
 3. Adjust the paths and names in FileDifferenceForensicEvidence/shared_utilities.py
+4. Run "start.py"
 
 ## Licence
 This project is licenced under the terms of LGPL. This software comes with absolutely no warranty. We do not take over any liability for bugs and flaws. You are not allowed to use the content of this repository if you do not agree to these terms.

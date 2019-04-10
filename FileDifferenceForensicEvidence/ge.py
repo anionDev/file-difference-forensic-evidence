@@ -65,6 +65,7 @@ def execute(configuration: Configuration):
                     else:
                         raise Exception("Unknown action")
                 else:
+                    configuration.log.info("Execute action "+action.id+" in vm...")
                     shared_utilities.continue_vm(configuration, False)
                     shared_utilities.execute_action_in_vm(action, configuration)
                 shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse, configuration)
@@ -73,6 +74,7 @@ def execute(configuration: Configuration):
                     if (configuration.overwrite_existing_files_and_snapshots):
                         shared_utilities.ensure_snapshot_does_not_exist(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
                     shared_utilities.create_snapshot(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
+                configuration.log.debug("Create trace image...");
                 create_trace_image(action,iteration_number,result_file_name)
                 executed_actions.append([action,iteration_number])
             except Exception as exception_object:
@@ -104,7 +106,9 @@ def execute(configuration: Configuration):
         shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + action.init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
         init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
         if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
+            configuration.log.debug("remove "+init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference+"...");
             os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+        configuration.log.debug("Copy "+action.init_raw_file +" to "+ init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference+"...");
         shutil.copy(action.init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     def generate_idiff_files():

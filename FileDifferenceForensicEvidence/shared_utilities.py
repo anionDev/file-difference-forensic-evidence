@@ -6,16 +6,17 @@ import re
 
 class Action(object):
     def __init__(self, name:str, id:str,argument:str, name_of_based_snapshot:str, is_noise_action:bool, working_directory:str):
+        self.is_noise_action = is_noise_action
+        self.id=id
         self.name = name
-        Action._action_counter = Action._action_counter + 1
-        self.id = "action_" + str(Action._action_counter)+"."+id
         self.argument = argument
         self.name_of_based_snapshot = name_of_based_snapshot
-        self.name_of_init_raw_file = self.id + ".init.raw"
-        self.init_raw_file = working_directory + self.name_of_init_raw_file
-        self.is_noise_action = is_noise_action
         if(not self.is_noise_action):
-            self.noise_action = Action(self.name + ".noise", self.id + ".noise", [], self.name_of_based_snapshot, True, working_directory)
+            Action._action_counter = Action._action_counter + 1
+            self.id = "action" + str(Action._action_counter)+"."+self.id
+            self.name_of_init_raw_file = self.id + ".init.raw"
+            self.init_raw_file = working_directory + self.name_of_init_raw_file
+            self.noise_action = Action("Special:Noise:Recording noise", self.id + ".noise", [], self.name_of_based_snapshot, True, working_directory)
 Action.noise_action :Action = None
 Action._action_counter :int = 0
 class Configuration:
@@ -70,7 +71,7 @@ def get_vm_state(configuration: Configuration, vm_name: str):
 def start_program(configuration: Configuration, executable_with_full_path: str, argument: str, waiting_time_in_seconds_after_execution:int=0, title=""):
     if(not title == ""):
         configuration.log.info(title + ":")
-    configuration.log.debug("Start " + executable_with_full_path + " " + argument)
+    configuration.log.debug("Run '" + executable_with_full_path + " " + argument+"'")
     arguments = list()
     arguments.insert(len(arguments), executable_with_full_path)
     for argument_without_whitespace in argument.split():
