@@ -8,7 +8,7 @@ scripts/.vs/*
 scripts/scripts.pyproj.user
 
 *.iws
-
+**/workspace.xml
 *.suo
 
 # Byte-compiled / optimized / DLL files
