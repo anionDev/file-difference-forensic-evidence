@@ -44,7 +44,7 @@ def execute(configuration: Configuration):
         file.close()
 
     def delete_trace_image_if_desired(action:Action, iteration_number:int):
-        if(delete_trace_image_after_analysis):
+        if(configuration.delete_trace_image_after_analysis):
             os.remove(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
     def generate_evidence(action:Action,iteration_number:int):
