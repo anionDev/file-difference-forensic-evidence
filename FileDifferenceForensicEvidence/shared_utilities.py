@@ -20,7 +20,7 @@ Action.noise_action :Action = None
 Action._action_counter :int = 0
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
+    working_directory :str = f"G:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
