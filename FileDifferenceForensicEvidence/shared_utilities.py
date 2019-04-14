@@ -16,6 +16,7 @@ class Action(object):
             self.id = "action" + str(Action._action_counter)+"."+self.id
             self.name_of_init_raw_file = self.id + ".init.raw" # value will be "action1.InstallProgram.init.raw" for example
             self.noise_action = Action("Special:Noise:Recording noise", self.id + ".noise", [], self.name_of_based_snapshot, True, working_directory)
+            self.noise_action.name_of_init_raw_file = self.name_of_init_raw_file
 Action.noise_action :Action = None
 Action._action_counter :int = 0
 class Configuration:
