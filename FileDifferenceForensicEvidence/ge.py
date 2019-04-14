@@ -105,8 +105,8 @@ def execute(configuration: Configuration):
 
     def generate_new_init_raw_file(action:Action):
         restore_snapshot(action.name_of_based_snapshot)
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference, 1, "Clone medium (Create raw-file of initial state)")
         init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference, 1, "Clone medium (Create raw-file of initial state)")
         if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
             configuration.log.debug("remove "+init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference+"...");
             os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
