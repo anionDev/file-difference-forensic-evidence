@@ -116,7 +116,7 @@ def ensure_vm_is_running(name_of_vm: str, configuration: Configuration, use_gui=
             gui_argument = "gui"
         else:
             gui_argument = "headless"
-        start_program(configuration, configuration.vboxmanage_executable,"startvm " + name_of_vm + " -type " + gui_argument, 5)
+        start_program(configuration, configuration.vboxmanage_executable,"startvm " + name_of_vm + " -type " + gui_argument, 15)
 
 def ensure_vm_is_shutdown(name_of_vm: str, configuration:Configuration):
     if get_vm_state(configuration, name_of_vm) == "running":

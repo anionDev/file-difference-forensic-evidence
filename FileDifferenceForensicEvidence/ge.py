@@ -33,7 +33,6 @@ def execute(configuration: Configuration):
         shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + snapshot_name, 5, "Restore original state of vm")
 
     def execute_idifference_for_action(action:Action,iteration_number:int):
-        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration, False)
         execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_init_raw_file,
                             "/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_result_raw_file,
                             configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
@@ -90,12 +89,12 @@ def execute(configuration: Configuration):
 
     def generate_evidence_full():
         for action in configuration.actions:
-            generate_new_init_raw_file_if_desired(action)
+            generate_noise_and_generate_new_init_raw_file_if_desired(action)
             for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
                 generate_evidence(action, iteration_number)
 
 
-    def generate_new_init_raw_file_if_desired(action:Action):
+    def generate_noise_and_generate_new_init_raw_file_if_desired(action:Action):
         if configuration.generate_init_raw:
             init_raw_file=configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
             if(os.path.isfile(init_raw_file)):
@@ -115,6 +114,7 @@ def execute(configuration: Configuration):
             os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     def generate_idiff_files():
+        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration, True)
         for executed_action in executed_actions:
             execute_idifference_for_action(executed_action[0], executed_action[1])
             delete_trace_image_if_desired(executed_action.name, executed_action.id)
