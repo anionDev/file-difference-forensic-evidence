@@ -7,22 +7,20 @@ import re
 class Action(object):
     def __init__(self, name:str, id:str,argument:str, name_of_based_snapshot:str, is_noise_action:bool, working_directory:str):
         self.is_noise_action = is_noise_action
-        self.id=id
-        self.name = name
-        self.argument = argument
-        self.name_of_based_snapshot = name_of_based_snapshot
+        self.id=id # value will be "action1.InstallProgram" for example
+        self.name = name # value will be "Special:WaitUntilUserContinues:start program" for example
+        self.argument = argument # value will be "["arg1", "arg2"]" for example
+        self.name_of_based_snapshot = name_of_based_snapshot # value will be "initial" for example
         if(not self.is_noise_action):
             Action._action_counter = Action._action_counter + 1
             self.id = "action" + str(Action._action_counter)+"."+self.id
-            self.name_of_init_raw_file = self.id + ".init.raw"
-            self.init_raw_file = working_directory + self.name_of_init_raw_file
+            self.name_of_init_raw_file = self.id + ".init.raw" # value will be "action1.InstallProgram.init.raw" for example
             self.noise_action = Action("Special:Noise:Recording noise", self.id + ".noise", [], self.name_of_based_snapshot, True, working_directory)
 Action.noise_action :Action = None
 Action._action_counter :int = 0
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
-                                                               #directory
+    working_directory :str = f"C:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -34,8 +32,8 @@ class Configuration:
     password_of_vm_to_analyse :str = ""
     snapshot_name_for_initial_state_of_vm_to_analyse :str = "initial"
 
-    amount_of_executions_per_action : int = 3 #Recommended value: 3
-    noise_recording_time_in_seconds : int = 300 #Recommended value: 300
+    amount_of_executions_per_action : int = 3 # Recommended value: 3
+    noise_recording_time_in_seconds : int = 300 # Recommended value: 300
     actions = [
         Action("Special:WaitUntilUserContinues:install program", "InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
         Action("Special:WaitUntilUserContinues:start program", "StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
@@ -47,7 +45,6 @@ class Configuration:
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
     shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference :str = working_directory + "shared\\"
-
 
     name_of_vm_which_has_idifference :str = "ST_fiwalk"
     user_of_vm_which_has_idifference :str = "fiwalk"

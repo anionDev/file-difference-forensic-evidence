@@ -34,7 +34,7 @@ def execute(configuration: Configuration):
 
     def execute_idifference_for_action(action:Action,iteration_number:int):
         shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration, False)
-        execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.init_raw_file,"/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
+        execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_init_raw_file,"/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + to_action_name_string(action,iteration_number) + ".raw",configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff")
 
     def execute_idifference(raw_file_1:str,raw_file_2:str,result_file:str):
         idifference2_command = "\"" + configuration.vboxmanage_executable + "\" " + "guestcontrol " + configuration.name_of_vm_which_has_idifference + " run --exe " + configuration.path_of_python3_in_vm_which_has_idifference + " --username " + configuration.user_of_vm_which_has_idifference + " --password " + configuration.password_of_which_has_idifference + " --putenv PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --wait-stdout --wait-stderr -- arg " + configuration.path_of_difference_in_vm_which_has_idifference + " " + raw_file_1 + " " + raw_file_2
@@ -60,9 +60,9 @@ def execute(configuration: Configuration):
                         shared_utilities.continue_vm(configuration, True)
                         input("Wait for execution of manual action " + action.id + " ('" + action.name.split(":")[2] + "') in the vm. Please press enter when this action is finished to continue generating evidences.")
                     elif action.name.lower().startswith("Special:Noise:".lower()):
-                        configuration.log.info("Recording noise... (Waiting " + str(configuration.noise_recording_time_in_seconds) + " seconds)")
                         shared_utilities.continue_vm(configuration, False)
                         time.sleep(configuration.noise_recording_time_in_seconds)
+                        configuration.log.info("Recording noise... (Waiting " + str(configuration.noise_recording_time_in_seconds) + " seconds)")
                     else:
                         raise Exception("Unknown action")
                 else:
@@ -94,23 +94,22 @@ def execute(configuration: Configuration):
 
     def generate_new_init_raw_file_if_desired(action:Action):
         if configuration.generate_init_raw:
-            if(os.path.isfile(action.init_raw_file)):
+            init_raw_file=configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
+            if(os.path.isfile(init_raw_file)):
                 if(configuration.overwrite_existing_init_raw):
-                    os.remove(action.init_raw_file)
+                    os.remove(init_raw_file)
                     generate_new_init_raw_file(action)
             else:
                 generate_new_init_raw_file(action)
-        generate_evidence(action.noise_action,0)
+        generate_evidence(action.noise_action, 0)
 
     def generate_new_init_raw_file(action:Action):
         restore_snapshot(action.name_of_based_snapshot)
-        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + action.init_raw_file, 1, "Clone medium (Create raw-file of initial state)")
+        shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference, 1, "Clone medium (Create raw-file of initial state)")
         init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
         if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
             configuration.log.debug("remove "+init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference+"...");
             os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
-        configuration.log.debug("Copy "+action.init_raw_file +" to "+ init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference+"...");
-        shutil.copy(action.init_raw_file, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     def generate_idiff_files():
         for executed_action in executed_actions:
