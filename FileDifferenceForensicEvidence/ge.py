@@ -48,6 +48,7 @@ def execute(configuration: Configuration):
             os.remove(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw")
 
     def generate_evidence(action:Action,iteration_number:int):
+        executed_actions.append([action,iteration_number])
         result_file_name = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + to_action_name_string(action,iteration_number) + ".raw"
         if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(result_file_name)):
             configuration.log.info("Start evidence generation for action " + action.id + " in iteration " + str(iteration_number))
@@ -57,7 +58,7 @@ def execute(configuration: Configuration):
                     if(action.name.lower().startswith("Special:WaitUntilUserContinues:".lower())):
                         input("Next action in the vm: " + action.id + " ('" + action.name.split(":")[2] + "'). Please press enter to continue the vm and then execute the action.")
                         shared_utilities.continue_vm(configuration, True)
-                        input("Wait for execution of manual action " + action.id + " ('" + action.name.split(":")[2] + "') in the vm. Please press enter if this action is finished to continue generating evidences.")
+                        input("Wait for execution of manual action " + action.id + " ('" + action.name.split(":")[2] + "') in the vm. Please press enter when this action is finished to continue generating evidences.")
                     elif action.name.lower().startswith("Special:Noise:".lower()):
                         configuration.log.info("Recording noise... (Waiting " + str(configuration.noise_recording_time_in_seconds) + " seconds)")
                         shared_utilities.continue_vm(configuration, False)
@@ -76,10 +77,10 @@ def execute(configuration: Configuration):
                     shared_utilities.create_snapshot(configuration,configuration.name_of_vm_to_analyse, snapshot_name)
                 configuration.log.debug("Create trace image...");
                 create_trace_image(action,iteration_number,result_file_name)
-                executed_actions.append([action,iteration_number])
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while generating evidence  for action " + action.id + " in iteration " + str(iteration_number) + ":")
                 configuration.log.error(exception_object, exc_info=True)
+                raise
             finally:
                 shared_utilities.save_state_of_vm(configuration.name_of_vm_to_analyse,configuration)
             configuration.log.info("Evidence generation for action " + action.id + " in iteration " + str(iteration_number) + " finished")
