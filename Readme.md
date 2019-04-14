@@ -1,4 +1,7 @@
-## Description
+## Introduction
+
+Caution: The scripts in this repository have no stable-state currently!
+
 In this repository scripts should be created which allow to automatically determine characteristical evidences (the characteristical changes in the filesystem) which a (arbitrary) program/action produces. (The theoretical backgrounds can be found [here](https://pdfs.semanticscholar.org/5c5a/7cc3eada8f528606fc5a15d76063a3d3d530.pdf).)
 Execution-order:
 1. Generate evidences: ge.py
@@ -17,9 +20,7 @@ To execute this script correctly you need:
 - Much time
 - Much disk space
 
-## Usage
-
-Warning: The scripts in this repository have no stable-state!
+## Getting started
 
 1. Prepare the vm which contains the os where you want to execute the program/action. This vm is called vm_to_analyse. vm_to_analyse should be suspended initially.
 2. Prepare the vm which contains idifference2. This vm is called vm_which_has_idifference. vm_which_has_idifference should be shut down initially.
