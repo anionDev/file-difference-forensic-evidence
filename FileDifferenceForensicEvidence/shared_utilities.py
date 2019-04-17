@@ -3,25 +3,33 @@ import os
 import subprocess
 import time
 import re
+import uuid
+import hashlib
 
 class Action(object):
     def __init__(self, name:str, id:str,argument:str, name_of_based_snapshot:str, is_noise_action:bool, working_directory:str):
         self.is_noise_action = is_noise_action
-        self.id=id # value will be "action1.InstallProgram" for example
+        self.uuid = uuid.uuid4()
+        self.id = id # value will be "action1.InstallProgram" for example
         self.name = name # value will be "Special:WaitUntilUserContinues:start program" for example
         self.argument = argument # value will be "["arg1", "arg2"]" for example
         self.name_of_based_snapshot = name_of_based_snapshot # value will be "initial" for example
         if(not self.is_noise_action):
             Action._action_counter = Action._action_counter + 1
-            self.id = "action" + str(Action._action_counter)+"."+self.id
+            self.id = "action" + str(Action._action_counter) + "." + self.id
             self.name_of_init_raw_file = self.id + ".init.raw" # value will be "action1.InstallProgram.init.raw" for example
             self.noise_action = Action("Special:Noise:Recording noise", self.id + ".noise", [], self.name_of_based_snapshot, True, working_directory)
             self.noise_action.name_of_init_raw_file = self.name_of_init_raw_file
+    def __eq__(self, other):
+        if isinstance(other, Action):
+            return self.uuid == other.uuid
+        return False
 Action.noise_action :Action = None
 Action._action_counter :int = 0
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"G:\\projects\\{project_name}\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current directory
+    working_directory :str = f"G:\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
+                                                                                                                                                                                      #directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -35,13 +43,11 @@ class Configuration:
 
     amount_of_executions_per_action : int = 3 # Recommended value: 3
     noise_recording_time_in_seconds : int = 300 # Recommended value: 300
-    actions = [
-        Action("Special:WaitUntilUserContinues:install program", "InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
+    actions = [Action("Special:WaitUntilUserContinues:install program", "InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
         Action("Special:WaitUntilUserContinues:start program", "StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
         Action("Special:WaitUntilUserContinues:login to program", "LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
         Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
-        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory),
-    ]
+        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory)]
     
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
@@ -62,6 +68,8 @@ class Configuration:
     delete_trace_image_after_analysis :bool = False
     create_snapshots_after_action_execution :bool = True
     prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot."
+    calculate_hashs :bool = True
+    executed_action_instances = []
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)
@@ -69,7 +77,7 @@ def get_vm_state(configuration: Configuration, vm_name: str):
 def start_program(configuration: Configuration, executable_with_full_path: str, argument: str, waiting_time_in_seconds_after_execution:int=0, title=""):
     if(not title == ""):
         configuration.log.info(title + ":")
-    configuration.log.debug("Run '" + executable_with_full_path + " " + argument+"'")
+    configuration.log.debug("Run '" + executable_with_full_path + " " + argument + "'")
     arguments = list()
     arguments.insert(len(arguments), executable_with_full_path)
     for argument_without_whitespace in argument.split():
@@ -152,3 +160,14 @@ def delete_snapshot(configuration:Configuration,name_of_vm: str, name_of_snapsho
 def get_hdd_uuid(configuration: Configuration, vm_name:str):
         output = subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()
         return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(output).group(1)
+    
+hash_sha1 = hashlib.sha1()
+def calculate_sha2_of_file(configuration: Configuration, file:str):
+    if configuration.calculate_hashs:
+        with open(file, 'rb') as f:
+            while True:
+                data = f.read(65536)
+                if not data:
+                    break
+            sha1.update(data)
+        configuration.log.info("SHA1 of " + file + ": " + sha1.hexdigest())

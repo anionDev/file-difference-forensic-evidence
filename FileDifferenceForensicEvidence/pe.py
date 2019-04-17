@@ -3,6 +3,7 @@ import re
 import shutil
 from shared_utilities import Configuration
 from shared_utilities import Action
+import shared_utilities
 
 def get_name():
     return "Prepare evidences"
@@ -33,6 +34,8 @@ def execute(configuration: Configuration):
             pass
         return result
     def prepare_evidence_for_file(idiff_file:str, pe_file:str):
+        configuration.log.info("Start prepare_evidence_for_file with idiff_file='" + idiff_file + "'")
+        shared_utilities.calculate_sha2_of_file(configuration, idiff_file)
         result = list()
         with open(idiff_file) as file:
             idiff_file_lines = file.readlines()
@@ -56,18 +59,18 @@ def execute(configuration: Configuration):
         with open(pe_file, "w") as file:
             for line in result_as_set:
                 file.write("%s\n" % line)
+        shared_utilities.calculate_sha2_of_file(configuration,pe_file)
 
     def prepare_evidence():
-        for action in configuration.actions:
-            prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action.noise_action.name + ".idiff",configuration.working_directory + "pe\\" + action.noise_action.name + ".pe")
-            for execution_number in range(1, configuration.amount_of_executions_per_action + 1):
-                configuration.log.info("Start prepare evidence for action " + action.id + " in iteration " + str(execution_number))
-                try:
-                    prepare_evidence_for_file(configuration.working_directory + "idiff\\" + action.id + "." + str(execution_number) + ".idiff",configuration.working_directory + "pe\\" + action.id + "." + str(execution_number) + ".pe")
-                except Exception as exception_object:
-                    configuration.log.error("Exception occurred while prepare evidence  for action " + action.id + " in iteration " + str(execution_number) + ":")
-                    configuration.log.error(exception_object, exc_info=True)
-                configuration.log.info("Prepare evidence for action " + action.id + " in iteration " + str(execution_number) + " finished")
+        for action in configuration.executed_action_instances:
+            configuration.log.info("Start prepare evidence for action " + action.id + " in iteration " + str(action.iteration_number))
+            try:
+                prepare_evidence_for_file(action.result_idiff_file, action.result_pe_file)
+            except Exception as exception_object:
+                configuration.log.error("Exception occurred while prepare evidence  for action " + action.id + " in iteration " + str(action.iteration_number) + ":")
+                configuration.log.error(exception_object, exc_info=True)
+                raise
+            configuration.log.info("Prepare evidence for action " + action.id + " in iteration " + str(action.iteration_number) + " finished")
 
     try:
         prepare_evidence()

@@ -22,7 +22,7 @@ def execute(configuration: Configuration):
             else:
                 return False
         def __hash__(self):
-            return 0
+            return hash(self.file)
     def get_trace_from_me_file(me_file_with_full_path:str):
         traces = set()
         with open(me_file_with_full_path) as fileStream:

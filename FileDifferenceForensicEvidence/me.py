@@ -68,7 +68,7 @@ def execute(configuration: Configuration):
         write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        for action in configuration.actions:
+        for action in configuration.executed_action_instances:
             merge_evidence_for_file([configuration.working_directory + "pe\\" + action.noise_action.name + ".pe"],configuration.working_directory + "me\\" + action.noise_action.name + ".me")
             configuration.log.info("Start merge evidence for action " + action.id)
             try:

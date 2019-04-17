@@ -6,12 +6,13 @@ from shared_utilities import Action
 import shutil
 import shared_utilities
 import traceback
+import uuid
+import copy
 
 def get_name():
     return "Generate evidences"
 
 def execute(configuration: Configuration):
-    executed_actions = []
     if not os.path.exists(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference):
         os.makedirs(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference)
     if not os.path.exists(configuration.path_of_init_raw):
@@ -25,21 +26,27 @@ def execute(configuration: Configuration):
                
     def create_trace_image(action:Action, iteration_number:int, name:str):
         shared_utilities.start_program(configuration, configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration,configuration.name_of_vm_to_analyse) + " --format RAW " + name,0,"Clone medium (Create raw-file with traces for " + action.id + ")")
+        shared_utilities.calculate_sha2_of_file(configuration, name)
 
     def restore_snapshot(snapshot_name:str):
         shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + snapshot_name, 5, "Restore original state of vm")
 
-    def execute_idifference_for_action(action:Action,iteration_number:int):
-        result_idiff_file = configuration.folder_for_idiff_files + to_action_name_string(action,iteration_number) + ".idiff"
-        if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(result_idiff_file)):
-            configuration.log.info("Start idiff generation for action " + action.id+" from iteration "+ str(iteration_number))
+    def execute_idifference_for_action(action:Action):
+        action.result_idiff_file = configuration.folder_for_idiff_files + to_action_name_string(action,action.iteration_number) + ".idiff"
+        action.result_pe_file = configuration.working_directory + "pe\\" + to_action_name_string(action,action.iteration_number) + ".pe"
+        if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(action.result_idiff_file)) and False:#
+            configuration.log.info("Start idiff generation for action " + action.id + " from iteration " + str(action.iteration_number))
             execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_init_raw_file,
                                 "/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_result_raw_file,
-                                result_idiff_file)
+                                action.result_idiff_file)
             if(configuration.delete_trace_image_after_analysis):
                 os.remove(configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_result_raw_file)
+        shared_utilities.calculate_sha2_of_file(configuration,action.result_idiff_file)
 
     def execute_idifference(raw_file_1:str,raw_file_2:str,result_file:str):
+        configuration.log("Execute idifference with input1='" + raw_file_1 + "', input2='" + raw_file_2 + "', output='" + result_file + "'")
+        shared_utilities.calculate_sha2_of_file(configuration,raw_file_1)
+        shared_utilities.calculate_sha2_of_file(configuration,raw_file_2)
         idifference2_command = "\"" + configuration.vboxmanage_executable + "\" " + "guestcontrol " + configuration.name_of_vm_which_has_idifference + " run --exe " + configuration.path_of_python3_in_vm_which_has_idifference + " --username " + configuration.user_of_vm_which_has_idifference + " --password " + configuration.password_of_which_has_idifference + " --putenv PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin --wait-stdout --wait-stderr -- arg " + configuration.path_of_difference_in_vm_which_has_idifference + " " + raw_file_1 + " " + raw_file_2
         idifference2_output = subprocess.check_output(idifference2_command).decode()
         file = open(result_file, "w")
@@ -47,11 +54,12 @@ def execute(configuration: Configuration):
         file.close()
 
     def generate_evidence(action:Action,iteration_number:int):
-        executed_actions.append([action,iteration_number])
-        action.name_of_result_raw_file = to_action_name_string(action,iteration_number) + ".raw"
+        action.iteration_number = iteration_number
+        action.name_of_result_raw_file = to_action_name_string(action,action.iteration_number) + ".raw"
+        configuration.executed_action_instances.append(action)
         result_file_name = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_result_raw_file
         if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(result_file_name)):
-            configuration.log.info("Start evidence generation for action " + action.id + " in iteration " + str(iteration_number))
+            configuration.log.info("Start evidence generation for action " + action.id + " in iteration " + str(action.iteration_number))
             try:
                 restore_snapshot(action.name_of_based_snapshot)
                 if (action.name.lower().startswith("Special:".lower())):
@@ -89,8 +97,9 @@ def execute(configuration: Configuration):
         for action in configuration.actions:
             generate_noise_and_generate_new_init_raw_file_if_desired(action)
             for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
-                generate_evidence(action, iteration_number)
-
+                copied_action = copy.copy(action)
+                copied_action.uuid = uuid.uuid4()
+                generate_evidence(copied_action, iteration_number)
 
     def generate_noise_and_generate_new_init_raw_file_if_desired(action:Action):
         if configuration.generate_init_raw:
@@ -107,24 +116,22 @@ def execute(configuration: Configuration):
         restore_snapshot(action.name_of_based_snapshot)
         init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_init_raw_file
         shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "clonemedium disk " + shared_utilities.get_hdd_uuid(configuration, configuration.name_of_vm_to_analyse) + " --format RAW " + init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference, 1, "Clone medium (Create raw-file of initial state)")
-        if os.path.exists(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference) and configuration.overwrite_existing_files_and_snapshots:
-            configuration.log.debug("remove " + init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference + "...")
-            os.remove(init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
+        shared_utilities.calculate_sha2_of_file(configuration, init_raw_file_on_host_for_sharing_files_with_vm_which_has_idifference)
 
     def generate_idiff_files():
         if not os.path.exists(configuration.folder_for_idiff_files):
             os.makedirs(configuration.folder_for_idiff_files)
-        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration, True)
-        for executed_action in executed_actions:
+        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration,True)
+        for executed_action in configuration.executed_action_instances:
             try:
-                execute_idifference_for_action(executed_action[0],executed_action[1])
+                execute_idifference_for_action(executed_action)
             except Exception as exception:
-                configuration.log.warning("Exception occurred in execute_idifference_for_action(" + executed_action[0].id + ", " + str(executed_action[1]) + ")")
+                configuration.log.warning("Exception occurred in execute_idifference_for_action(" + executed_action.id + ", " + str(executed_action.iteration_number) + ")")
                 configuration.log.warning(exception, exc_info=True)
                 raise            
     try:
-        shared_utilities.ensure_vm_which_has_idifference_has_shared_folder(configuration)
-        shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference, configuration)
+        shared_utilities.ensure_vm_which_has_idifference_has_shared_folder(configuration)        
+        shared_utilities.ensure_vm_is_shutdown(configuration.name_of_vm_which_has_idifference,configuration)
         generate_evidence_full()
         generate_idiff_files()
     except Exception as exception:

@@ -20,10 +20,9 @@ def calculate_evidences(configuration: Configuration):
     logging.basicConfig(format=configuration.log_format,
                         datefmt=configuration.log_dateformat,
                         level=configuration.log_loglevel,
-                        handlers=[logging.FileHandler(configuration.log_file),
-                            logging.StreamHandler(),])
-    executionSteps = [ge, pe, me, ce,]
-    configuration.log.info("Start project " +configuration.project_name)
+                        handlers=[logging.FileHandler(configuration.log_file), logging.StreamHandler()])
+    executionSteps = [ge, pe, me, ce]
+    configuration.log.info("Start project " + configuration.project_name)
     for execution_step in executionSteps:
         configuration.log.info("------------------------------------------------------------")
         configuration.log.info("Start " + execution_step.get_name())
@@ -33,6 +32,6 @@ def calculate_evidences(configuration: Configuration):
             break
         configuration.log.info("Finished " + execution_step.get_name())
     configuration.log.info("------------------------------------------------------------")
-    configuration.log.info("Finished project " +configuration.project_name)
+    configuration.log.info("Finished project " + configuration.project_name)
 
 calculate_evidences(shared_utilities.Configuration())
