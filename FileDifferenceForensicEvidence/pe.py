@@ -59,10 +59,10 @@ def execute(configuration: Configuration):
         with open(pe_file, "w") as file:
             for line in result_as_set:
                 file.write("%s\n" % line)
-        shared_utilities.calculate_sha2_of_file(configuration,pe_file)
+        shared_utilities.calculate_sha2_of_file(configuration, pe_file)
 
     def prepare_evidence():
-        for action in configuration.executed_action_instances:
+        for action in configuration.executed_action_instances_for_pe:
             configuration.log.info("Start prepare evidence for action " + action.id + " in iteration " + str(action.iteration_number))
             try:
                 prepare_evidence_for_file(action.result_idiff_file, action.result_pe_file)

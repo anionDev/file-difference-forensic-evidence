@@ -26,10 +26,15 @@ class Action(object):
         return False
 Action.noise_action :Action = None
 Action._action_counter :int = 0
+
+class MergeActionObject(object):
+    def __init__(self,base_action:Action):
+        self.base_action=base_action
+        self.action_instances=[]
+
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"G:\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
-                                                                                                                                                                                      #directory
+    working_directory :str = f"G:\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current                                                                                                                                                                                    #directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -47,7 +52,8 @@ class Configuration:
         Action("Special:WaitUntilUserContinues:start program", "StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
         Action("Special:WaitUntilUserContinues:login to program", "LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
         Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
-        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory)]
+        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory)
+        ]
     
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
@@ -69,7 +75,8 @@ class Configuration:
     create_snapshots_after_action_execution :bool = True
     prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot."
     calculate_hashs :bool = True
-    executed_action_instances = []
+    executed_action_instances_for_pe = []
+    executed_action_instances_merge_list = []
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)

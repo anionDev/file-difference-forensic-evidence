@@ -3,6 +3,7 @@ import os
 import time
 from shared_utilities import Configuration
 from shared_utilities import Action
+from shared_utilities import MergeActionObject
 import shutil
 import shared_utilities
 import traceback
@@ -30,11 +31,11 @@ def execute(configuration: Configuration):
 
     def restore_snapshot(snapshot_name:str):
         shared_utilities.start_program(configuration,configuration.vboxmanage_executable, "snapshot " + configuration.name_of_vm_to_analyse + " restore " + snapshot_name, 5, "Restore original state of vm")
-
+    def get_pe_file_for_action(action,iteration_number):
+        return configuration.working_directory + "pe\\" + to_action_name_string(action,iteration_number) + ".pe"
     def execute_idifference_for_action(action:Action):
         action.result_idiff_file = configuration.folder_for_idiff_files + to_action_name_string(action,action.iteration_number) + ".idiff"
-        action.result_pe_file = configuration.working_directory + "pe\\" + to_action_name_string(action,action.iteration_number) + ".pe"
-        if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(action.result_idiff_file)) and False:#
+        if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(action.result_idiff_file)):
             configuration.log.info("Start idiff generation for action " + action.id + " from iteration " + str(action.iteration_number))
             execute_idifference("/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_init_raw_file,
                                 "/media/sf_" + configuration.name_of_shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + "/" + action.name_of_result_raw_file,
@@ -56,7 +57,7 @@ def execute(configuration: Configuration):
     def generate_evidence(action:Action,iteration_number:int):
         action.iteration_number = iteration_number
         action.name_of_result_raw_file = to_action_name_string(action,action.iteration_number) + ".raw"
-        configuration.executed_action_instances.append(action)
+        configuration.executed_action_instances_for_pe.append(action)
         result_file_name = configuration.shared_folder_on_host_for_sharing_files_with_vm_which_has_idifference + action.name_of_result_raw_file
         if(configuration.overwrite_existing_files_and_snapshots or not os.path.exists(result_file_name)):
             configuration.log.info("Start evidence generation for action " + action.id + " in iteration " + str(action.iteration_number))
@@ -96,10 +97,15 @@ def execute(configuration: Configuration):
     def generate_evidence_full():
         for action in configuration.actions:
             generate_noise_and_generate_new_init_raw_file_if_desired(action)
+            action.noise_action.result_pe_file=get_pe_file_for_action(action.noise_action,0)
+            merge_action=MergeActionObject(action)
             for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
+                action.result_pe_file=get_pe_file_for_action(action,iteration_number)
                 copied_action = copy.copy(action)
                 copied_action.uuid = uuid.uuid4()
-                generate_evidence(copied_action, iteration_number)
+                generate_evidence(copied_action, iteration_number)                
+                merge_action.action_instances.append(copied_action)
+            configuration.executed_action_instances_merge_list.append(merge_action)
 
     def generate_noise_and_generate_new_init_raw_file_if_desired(action:Action):
         if configuration.generate_init_raw:
@@ -122,7 +128,7 @@ def execute(configuration: Configuration):
         if not os.path.exists(configuration.folder_for_idiff_files):
             os.makedirs(configuration.folder_for_idiff_files)
         shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration,True)
-        for executed_action in configuration.executed_action_instances:
+        for executed_action in configuration.executed_action_instances_for_pe:
             try:
                 execute_idifference_for_action(executed_action)
             except Exception as exception:

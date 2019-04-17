@@ -57,29 +57,29 @@ def execute(configuration: Configuration):
                             else:
                                 dictionary_deleted[found_file] = 1
 
-        if os.path.exists(output_me_file_with_full_path and configuration.overwrite_existing_files_and_snapshots):
+        if os.path.exists(output_me_file_with_full_path) and configuration.overwrite_existing_files_and_snapshots:
             os.remove(output_me_file_with_full_path)
         with open(output_me_file_with_full_path, 'w'):
             pass
-        write_content_merged(dictionary_access,output_me_file_with_full_path,"a")
-        write_content_merged(dictionary_modify,output_me_file_with_full_path,"m")
-        write_content_merged(dictionary_changed,output_me_file_with_full_path,"c")
-        write_content_merged(dictionary_created,output_me_file_with_full_path,"cr")
-        write_content_merged(dictionary_deleted,output_me_file_with_full_path,"d")
+        write_content_merged(dictionary_access, output_me_file_with_full_path,"a")
+        write_content_merged(dictionary_modify, output_me_file_with_full_path,"m")
+        write_content_merged(dictionary_changed, output_me_file_with_full_path,"c")
+        write_content_merged(dictionary_created, output_me_file_with_full_path,"cr")
+        write_content_merged(dictionary_deleted, output_me_file_with_full_path,"d")
 
     def merge_evidence():
-        for action in configuration.executed_action_instances:
-            merge_evidence_for_file([configuration.working_directory + "pe\\" + action.noise_action.name + ".pe"],configuration.working_directory + "me\\" + action.noise_action.name + ".me")
-            configuration.log.info("Start merge evidence for action " + action.id)
+        for action in configuration.executed_action_instances_merge_list:
+            merge_evidence_for_file([action.base_action.noise_action.result_pe_file],configuration.working_directory + "me\\" + action.base_action.noise_action.id + ".me")
+            configuration.log.info("Start merge evidence for action " + action.base_action.id)
             try:
-                pe_files = []
-                for i in range(1, configuration.amount_of_executions_per_action + 1):
-                    pe_files.append(configuration.working_directory + "pe\\" + action.id + "." + str(i) + ".pe")
-                merge_evidence_for_file(pe_files,configuration.working_directory + "me\\" + action.id + ".me")
+                files = []
+                for action_instance in action.action_instances:
+                    files.append(action_instance.result_pe_file)
+                merge_evidence_for_file(files,configuration.working_directory + "me\\" + action.base_action.id + ".me")
             except Exception as exception_argument:
-                configuration.log.error("Exception occurred while merge evidence  for action " + action.id + ":")
+                configuration.log.error("Exception occurred while merge evidence  for action " + action.base_action.id + ":")
                 configuration.log.error(exception_argument, exc_info=True)
-            configuration.log.info("Merge evidence for action " + action.id + " finished")
+            configuration.log.info("Merge evidence for action " + action.base_action.id + " finished")
             
     try:
         merge_evidence()
