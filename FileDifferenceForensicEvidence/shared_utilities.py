@@ -34,7 +34,7 @@ class MergeActionObject(object):
 
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"G:\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current                                                                                                                                                                                    #directory
+    working_directory :str = f"G:\\projects\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current                                                                                                                                                                                    #directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -74,9 +74,10 @@ class Configuration:
     delete_trace_image_after_analysis :bool = False
     create_snapshots_after_action_execution :bool = True
     prefix_of_snapshotnames_of_actions :str = "fdfe_snapshot."
-    calculate_hashs :bool = True
+    calculate_hashs :bool = False
     executed_action_instances_for_pe = []
     executed_action_instances_merge_list = []
+    ignore_orphan_files=True
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)
@@ -168,13 +169,11 @@ def get_hdd_uuid(configuration: Configuration, vm_name:str):
         output = subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()
         return re.compile("\"SATA-ImageUUID-0-0\"=\"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})\"").search(output).group(1)
     
-hash_sha1 = hashlib.sha1()
 def calculate_sha2_of_file(configuration: Configuration, file:str):
     if configuration.calculate_hashs:
-        with open(file, 'rb') as f:
-            while True:
-                data = f.read(65536)
-                if not data:
-                    break
-            sha1.update(data)
+        sha1 = hashlib.sha1()
+        print("Calculating hash for "+file)
+        with open(file, "rb") as f:
+            for chunk in iter(lambda: f.read(4096), b""):
+                sha1.update(chunk)
         configuration.log.info("SHA1 of " + file + ": " + sha1.hexdigest())

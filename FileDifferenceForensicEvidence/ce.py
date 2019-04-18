@@ -33,7 +33,7 @@ def execute(configuration: Configuration):
                     traces.add(Trace(splitted[0],splitted[1],int(splitted[2])))
         return traces
     def characteristic_evidence_for_file(me_file_with_full_path:str,me_files_of_ignored_traced,result_ce_file_with_full_path:str):
-        if os.path.exists(result_ce_file_with_full_path and configuration.overwrite_existing_files_and_snapshots):
+        if os.path.exists(result_ce_file_with_full_path) and configuration.overwrite_existing_files_and_snapshots:
             os.remove(result_ce_file_with_full_path)
         trace_of_action = get_trace_from_me_file(me_file_with_full_path)
         ignored_traces = set()
@@ -54,7 +54,7 @@ def execute(configuration: Configuration):
         for action in configuration.actions:
             configuration.log.info("Start characteristic evidence for action " + action.id)
             try:
-                ignored_files = [configuration.working_directory + "me\\" + action.noise_action.name + ".me"]
+                ignored_files = [configuration.working_directory + "me\\" + action.noise_action.id + ".me"]
                 for ignore_action_name in configuration.actions:
                     if ignore_action_name.id != action.id:
                         ignored_files.append(configuration.working_directory + "me\\" + ignore_action_name.id + ".me")
@@ -62,6 +62,7 @@ def execute(configuration: Configuration):
             except Exception as exception_object:
                 configuration.log.error("Exception occurred while characteristic evidence  for action " + action + ":")
                 configuration.log.error(exception_object, exc_info=True)
+                raise
             configuration.log.info("Characteristic evidence for action " + action.id + " finished")
 
     try:

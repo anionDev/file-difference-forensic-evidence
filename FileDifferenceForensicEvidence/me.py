@@ -27,7 +27,7 @@ def execute(configuration: Configuration):
             with open(pe_file) as file_stream:
                 lines = file_stream.readlines()
                 for line in lines:
-                    if('\t' in line):
+                    if('\t' in line) and (not(configuration.ignore_orphan_files and line.startswith("$OrphanFiles"))):
                         splitted = re.split(r'\t+', line)
                         found_file = splitted[0]
                         operation = splitted[1].replace("\n","")

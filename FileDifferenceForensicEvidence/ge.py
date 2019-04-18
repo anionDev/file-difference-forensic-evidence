@@ -45,6 +45,7 @@ def execute(configuration: Configuration):
         shared_utilities.calculate_sha2_of_file(configuration,action.result_idiff_file)
 
     def execute_idifference(raw_file_1:str,raw_file_2:str,result_file:str):
+        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration,True)
         configuration.log("Execute idifference with input1='" + raw_file_1 + "', input2='" + raw_file_2 + "', output='" + result_file + "'")
         shared_utilities.calculate_sha2_of_file(configuration,raw_file_1)
         shared_utilities.calculate_sha2_of_file(configuration,raw_file_2)
@@ -127,7 +128,6 @@ def execute(configuration: Configuration):
     def generate_idiff_files():
         if not os.path.exists(configuration.folder_for_idiff_files):
             os.makedirs(configuration.folder_for_idiff_files)
-        shared_utilities.ensure_vm_is_running(configuration.name_of_vm_which_has_idifference,configuration,True)
         for executed_action in configuration.executed_action_instances_for_pe:
             try:
                 execute_idifference_for_action(executed_action)
