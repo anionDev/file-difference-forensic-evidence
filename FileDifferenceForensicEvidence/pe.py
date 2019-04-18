@@ -17,9 +17,6 @@ def execute(configuration: Configuration):
         try:
             if operation == "cr":
                 result.append(line_splitted_at_tab[1] + "\t" + operation)
-                result.append(line_splitted_at_tab[1] + "\ta")
-                result.append(line_splitted_at_tab[1] + "\tm")
-                result.append(line_splitted_at_tab[1] + "\tc")
             if operation == "c":
                 pass
             if operation == "d":
