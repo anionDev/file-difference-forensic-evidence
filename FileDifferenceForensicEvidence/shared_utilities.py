@@ -78,6 +78,7 @@ class Configuration:
     executed_action_instances_for_pe = []
     executed_action_instances_merge_list = []
     ignore_orphan_files=True
+    me_files=[]
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)

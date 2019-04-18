@@ -69,13 +69,16 @@ def execute(configuration: Configuration):
 
     def merge_evidence():
         for action in configuration.executed_action_instances_merge_list:
-            merge_evidence_for_file([action.base_action.noise_action.result_pe_file],configuration.working_directory + "me\\" + action.base_action.noise_action.id + ".me")
+            me_noise_file=configuration.working_directory + "me\\" + action.base_action.noise_action.id + ".me"
+            me_file=configuration.working_directory + "me\\" + action.base_action.id + ".me"
+            configuration.me_files.append([action, me_file, me_noise_file])
+            merge_evidence_for_file([action.base_action.noise_action.result_pe_file],me_noise_file)
             configuration.log.info("Start merge evidence for action " + action.base_action.id)
             try:
                 files = []
                 for action_instance in action.action_instances:
                     files.append(action_instance.result_pe_file)
-                merge_evidence_for_file(files,configuration.working_directory + "me\\" + action.base_action.id + ".me")
+                merge_evidence_for_file(files,me_file)
             except Exception as exception_argument:
                 configuration.log.error("Exception occurred while merge evidence  for action " + action.base_action.id + ":")
                 configuration.log.error(exception_argument, exc_info=True)
