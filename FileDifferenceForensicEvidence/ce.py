@@ -52,9 +52,9 @@ def execute(configuration: Configuration):
             file.write("\n".join(characteristic_traces_lines))
     def characteristic_evidence():
         for triple in configuration.me_files:
-            action=triple[0].base_action
-            me_file=triple[1]
-            me_noise_file=triple[2]
+            action = triple[0].base_action
+            me_file = triple[1]
+            me_noise_file = triple[2]
             configuration.log.info("Start characteristic evidence for action " + action.id)
             try:
                 ignored_files = [me_noise_file]

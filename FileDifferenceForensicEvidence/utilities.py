@@ -29,12 +29,13 @@ Action._action_counter :int = 0
 
 class MergeActionObject(object):
     def __init__(self,base_action:Action):
-        self.base_action=base_action
-        self.action_instances=[]
+        self.base_action = base_action
+        self.action_instances = []
 
 class Configuration:
     project_name = "fdfe"
-    working_directory :str = f"G:\\projects\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current                                                                                                                                                                                    #directory
+    working_directory :str = f"G:\\projects\\fdfe\\" #use 'os.path.dirname(os.path.abspath(__file__)) + "\\"' for the current
+                                                     ##directory
     log_file :str = working_directory + project_name + "_execution.log"
     log_format :str = '%(asctime)s [%(name)s] [%(levelname)s] %(message)s'
     log_dateformat :str = '%Y-%m-%d %H:%M:%S'
@@ -51,9 +52,7 @@ class Configuration:
     actions = [Action("Special:WaitUntilUserContinues:install program", "InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
         Action("Special:WaitUntilUserContinues:start program", "StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
         Action("Special:WaitUntilUserContinues:login to program", "LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
-        Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
-        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory)
-        ]
+        Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),]
     
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
@@ -77,8 +76,8 @@ class Configuration:
     calculate_hashs :bool = False
     executed_action_instances_for_pe = []
     executed_action_instances_merge_list = []
-    ignore_orphan_files=True
-    me_files=[]
+    ignore_orphan_files = True
+    me_files = []
 
 def get_vm_state(configuration: Configuration, vm_name: str):
     return re.compile("VMState=\"(.*)\"").search(subprocess.check_output("\"" + configuration.vboxmanage_executable + "\" " + "showvminfo " + vm_name + " --machinereadable").decode()).group(1)
@@ -173,7 +172,7 @@ def get_hdd_uuid(configuration: Configuration, vm_name:str):
 def calculate_sha2_of_file(configuration: Configuration, file:str):
     if configuration.calculate_hashs:
         sha1 = hashlib.sha1()
-        print("Calculating hash for "+file)
+        print("Calculating hash for " + file)
         with open(file, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
                 sha1.update(chunk)

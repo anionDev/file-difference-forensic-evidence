@@ -98,10 +98,10 @@ def execute(configuration: Configuration):
     def generate_evidence_full():
         for action in configuration.actions:
             generate_noise_and_generate_new_init_raw_file_if_desired(action)
-            action.noise_action.result_pe_file=get_pe_file_for_action(action.noise_action,0)
-            merge_action=MergeActionObject(action)
+            action.noise_action.result_pe_file = get_pe_file_for_action(action.noise_action,0)
+            merge_action = MergeActionObject(action)
             for iteration_number in range(1, configuration.amount_of_executions_per_action + 1):
-                action.result_pe_file=get_pe_file_for_action(action,iteration_number)
+                action.result_pe_file = get_pe_file_for_action(action,iteration_number)
                 copied_action = copy.copy(action)
                 copied_action.uuid = uuid.uuid4()
                 generate_evidence(copied_action, iteration_number)                
