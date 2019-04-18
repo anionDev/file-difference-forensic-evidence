@@ -25,7 +25,7 @@
     <Compile Include="ge.py" />
     <Compile Include="me.py" />
     <Compile Include="pe.py" />
-    <Compile Include="shared_utilities.py" />
+    <Compile Include="utilities.py" />
   </ItemGroup>
   <ItemGroup>
     <InterpreterReference Include="Global|PythonCore|3.6" />

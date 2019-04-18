@@ -1,6 +1,6 @@
 import os
-from shared_utilities import Configuration
-from shared_utilities import Action
+from utilities import Configuration
+from utilities import Action
 import re
 import shutil
 

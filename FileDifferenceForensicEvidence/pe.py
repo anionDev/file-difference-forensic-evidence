@@ -1,9 +1,9 @@
 import os
 import re
 import shutil
-from shared_utilities import Configuration
-from shared_utilities import Action
-import shared_utilities
+from utilities import Configuration
+from utilities import Action
+import utilities
 
 def get_name():
     return "Prepare evidences"
@@ -32,7 +32,7 @@ def execute(configuration: Configuration):
         return result
     def prepare_evidence_for_file(idiff_file:str, pe_file:str):
         configuration.log.info("Start prepare_evidence_for_file with idiff_file='" + idiff_file + "'")
-        shared_utilities.calculate_sha2_of_file(configuration, idiff_file)
+        utilities.calculate_sha2_of_file(configuration, idiff_file)
         result = list()
         with open(idiff_file) as file:
             idiff_file_lines = file.readlines()
@@ -56,7 +56,7 @@ def execute(configuration: Configuration):
         with open(pe_file, "w") as file:
             for line in result_as_set:
                 file.write("%s\n" % line)
-        shared_utilities.calculate_sha2_of_file(configuration, pe_file)
+        utilities.calculate_sha2_of_file(configuration, pe_file)
 
     def prepare_evidence():
         for action in configuration.executed_action_instances_for_pe:

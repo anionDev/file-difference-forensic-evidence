@@ -1,10 +1,10 @@
-import shared_utilities
+import utilities
 import ge
 import pe
 import me
 import ce
-from shared_utilities import Configuration
-from shared_utilities import Action
+from utilities import Configuration
+from utilities import Action
 import logging
 import os
 import subprocess
@@ -34,4 +34,4 @@ def calculate_evidences(configuration: Configuration):
     configuration.log.info("------------------------------------------------------------")
     configuration.log.info("Finished project " + configuration.project_name)
 
-calculate_evidences(shared_utilities.Configuration())
+calculate_evidences(utilities.Configuration())
