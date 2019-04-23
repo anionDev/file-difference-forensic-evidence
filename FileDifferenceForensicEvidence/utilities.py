@@ -52,7 +52,9 @@ class Configuration:
     actions = [Action("Special:WaitUntilUserContinues:install program", "InstallProgram", [], snapshot_name_for_initial_state_of_vm_to_analyse, False,working_directory), 
         Action("Special:WaitUntilUserContinues:start program", "StartProgram", [], "prepared_01_after_action1_program_installed", False,working_directory),
         Action("Special:WaitUntilUserContinues:login to program", "LoginToProgram", [], "prepared_02_after_action2_program_started", False,working_directory),
-        Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),]
+        Action("Special:WaitUntilUserContinues:lock program", "LockProgram", [], "prepared_03_after_action3_logged_in", False,working_directory),
+        Action("Special:WaitUntilUserContinues:uninstall program", "UninstallProgram", [], "prepared_04_after_action3_logged_in_and_closed_program", False,working_directory)
+        ]
     
     path_of_init_raw :str = working_directory
     folder_for_idiff_files :str = working_directory + "idiff\\"
