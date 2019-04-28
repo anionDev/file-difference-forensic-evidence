@@ -1,3 +1,5 @@
+# File-Difference-Forensic-Evidence
+
 ## Introduction
 
 Caution: The scripts in this repository have no stable-state currently!
@@ -28,8 +30,12 @@ To execute this script correctly you need:
 4. Run "start.py"
 
 ## Licence
+
 This project is licenced under the terms of LGPL. This software comes with absolutely no warranty. We do not take over any liability for bugs and flaws. You are not allowed to use the content of this repository if you do not agree to these terms.
 If you like this project and it has helped you, please send me a cookie. I would be glad.
 
 ## Hints
+
 The scripts are tested with VirtualBox 6.0.4.r128413. For some functions the console-output of vboxmanage will be parsed. So if you use a VirtualBox-version where the console-output of vboxmanage looks different then this scripts may not work correctly.
+
+If you find any bug then please report it.
