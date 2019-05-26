@@ -173,9 +173,9 @@ def get_hdd_uuid(configuration: Configuration, vm_name:str):
     
 def calculate_sha2_of_file(configuration: Configuration, file:str):
     if configuration.calculate_hashs:
-        sha1 = hashlib.sha1()
+        sha256 = hashlib.sha256()
         print("Calculating hash for " + file)
         with open(file, "rb") as f:
             for chunk in iter(lambda: f.read(4096), b""):
-                sha1.update(chunk)
-        configuration.log.info("SHA1 of " + file + ": " + sha1.hexdigest())
+                sha256.update(chunk)
+        configuration.log.info("SHA256 of " + file + ": " + sha256.hexdigest())
