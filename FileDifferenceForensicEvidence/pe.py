@@ -53,6 +53,12 @@ def execute(configuration: Configuration):
                 if line == "Files with changed properties:":
                     current_operation = "c"
         result_as_set = set(result)
+		# Here we say informally: "Every line is an evidence. So result_as_set is the evidence-set."
+		# But formally correct would be: "The set of lines (=result_as_set) is one evidence. Every subset of result_as_set is also an evidence. 
+		# So the set with every subset (power set) of result_as_set is the correct evidence-set. evidence-set=P(result_as_set)."
+		# To resolve this issue the following scripts (me, ce) must be updated to handle sets of evidences.
+		# But this is not very useful since we can not really process the power-set of result_as_set because result_as_set is too big.
+		# result_as_set contains usually/often several entries (>1000). There is no computer which can handle the power-sets of such big sets.
         with open(pe_file, "w") as file:
             for line in result_as_set:
                 file.write("%s\n" % line)
